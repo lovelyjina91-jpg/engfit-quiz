@@ -356,11 +356,7 @@
         <span class="badge" id="totalBadge">총 000개 단어</span>
       </div>
 
-      <div class="section-label">테스트 방향</div>
-      <div class="mode-row">
-        <button class="opt-btn active" id="btnEnKr" onclick="setMode('en-kr')">영어 → 한국어</button>
-        <button class="opt-btn" id="btnKrEn" onclick="setMode('kr-en')">한국어 → 영어</button>
-      </div>
+      <div style="font-size:0.8em; color:#999; margin-bottom:20px;">영어 ↔ 한국어 랜덤 출제</div>
 
       <button class="start-btn" onclick="startQuiz()">시작하기 ✍️</button>
     </div>
@@ -867,8 +863,7 @@ const allWords = [
 // ────────────────────────────────────────────────
 //  앱 상태
 // ────────────────────────────────────────────────
-let mode = 'en-kr';   // 'en-kr' | 'kr-en'
-let quizWords = [];
+let quizWords = []; // [word, isEnKr]
 let current = 0;
 let correctCount = 0;
 let wrongWords = [];
@@ -877,12 +872,6 @@ let wrongWords = [];
 //  초기화
 // ────────────────────────────────────────────────
 document.getElementById('totalBadge').textContent = `총 ${allWords.length}개 단어`;
-
-function setMode(m) {
-  mode = m;
-  document.getElementById('btnEnKr').classList.toggle('active', m === 'en-kr');
-  document.getElementById('btnKrEn').classList.toggle('active', m === 'kr-en');
-}
 
 // ────────────────────────────────────────────────
 //  화면 전환
@@ -908,7 +897,8 @@ function shuffle(arr) {
 }
 
 function startQuiz() {
-  quizWords = shuffle(allWords);
+  // 각 단어마다 방향을 랜덤 지정
+  quizWords = shuffle(allWords).map(w => [w, Math.random() < 0.5]);
   current = 0;
   correctCount = 0;
   wrongWords = [];
@@ -921,7 +911,7 @@ function startQuiz() {
 // ────────────────────────────────────────────────
 function renderQuestion() {
   const total = quizWords.length;
-  const q = quizWords[current];
+  const [q, isEnKr] = quizWords[current];
 
   // 진행바
   document.getElementById('progText').textContent = `${current + 1} / ${total}`;
@@ -929,7 +919,6 @@ function renderQuestion() {
   document.getElementById('progFill').style.width = `${((current + 1) / total) * 100}%`;
 
   // 문제
-  const isEnKr = mode === 'en-kr';
   const questionText = isEnKr ? q[0] : q[1];
   const answerText   = isEnKr ? q[1] : q[0];
 
@@ -1052,4 +1041,4 @@ function copyResult() {
 </script>
 </body>
 </html>
-                                                                                                       
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
