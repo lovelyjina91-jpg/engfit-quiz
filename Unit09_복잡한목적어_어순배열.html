@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 09. 복잡한 목적어 - 어순 배열 연습</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: linear-gradient(135deg, #fff8d4 0%, #fce8a3 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  header {
+    background: linear-gradient(135deg, #f9c93a 0%, #f0ad17 100%);
+    color: #fff;
+    padding: 24px 28px;
+    position: relative;
+  }
+  header .unit-badge {
+    display: inline-block;
+    background: #2e7d4f;
+    color: #fff;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  header h1 { font-size: 24px; font-weight: 800; }
+  header p { font-size: 14px; margin-top: 6px; opacity: 0.95; }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px;
+    background: #f8f8f4;
+    border-bottom: 1px solid #ececec;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+  }
+  .status-bar .score { color: #2e7d4f; }
+  .status-bar .progress-num { color: #d97706; }
+
+  .question-box {
+    padding: 26px 28px 8px;
+  }
+  .korean-sentence {
+    background: #f3faf5;
+    border-left: 4px solid #2e7d4f;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 17px;
+    color: #1f4d33;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .korean-sentence::before {
+    content: "🇰🇷 우리말: ";
+    color: #2e7d4f;
+    font-weight: 700;
+  }
+  .answer-area {
+    min-height: 64px;
+    background: #fffbef;
+    border: 2px dashed #f0ad17;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+    align-content: flex-start;
+    margin-bottom: 16px;
+  }
+  .answer-area:empty::after {
+    content: "👇 아래 단어 카드를 순서대로 눌러 문장을 만들어 보세요";
+    color: #b88a30;
+    font-size: 14px;
+    margin: auto;
+  }
+  .word-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 0 4px;
+    min-height: 64px;
+  }
+  .word-card {
+    background: #fff;
+    border: 2px solid #f0ad17;
+    color: #6b4a05;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+    user-select: none;
+  }
+  .word-card:hover { background: #fff4d0; transform: translateY(-1px); }
+  .word-card.placed {
+    background: #2e7d4f;
+    border-color: #1f5b39;
+    color: #fff;
+  }
+  .word-card.placed:hover { background: #266940; }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 28px 26px;
+    flex-wrap: wrap;
+  }
+  button.action {
+    flex: 1;
+    min-width: 110px;
+    border: none;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  button.check { background: #2e7d4f; color: #fff; }
+  button.check:hover { background: #1f5b39; }
+  button.reset { background: #fff; color: #6b4a05; border: 2px solid #f0ad17; }
+  button.reset:hover { background: #fff4d0; }
+  button.next { background: #f0ad17; color: #fff; }
+  button.next:hover { background: #d97706; }
+  button.action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .feedback {
+    margin: 0 28px 22px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.correct {
+    background: #e6f7ec;
+    border-left: 4px solid #2e7d4f;
+    color: #1f5b39;
+  }
+  .feedback.wrong {
+    background: #fdecea;
+    border-left: 4px solid #d93025;
+    color: #8a1d12;
+  }
+  .feedback strong { font-weight: 800; }
+  .feedback .answer-line {
+    margin-top: 6px;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Georgia', serif;
+    color: #222;
+    font-size: 15px;
+  }
+
+  .final-screen {
+    display: none;
+    padding: 40px 28px;
+    text-align: center;
+  }
+  .final-screen h2 { font-size: 26px; color: #2e7d4f; margin-bottom: 12px; }
+  .final-screen .score-big {
+    font-size: 56px;
+    font-weight: 800;
+    color: #f0ad17;
+    margin: 16px 0;
+  }
+  .final-screen .comment {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+  }
+  .final-screen button {
+    padding: 14px 32px;
+    background: #2e7d4f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .final-screen button:hover { background: #1f5b39; }
+
+  footer {
+    text-align: center;
+    padding: 14px;
+    font-size: 12px;
+    color: #999;
+    background: #fafaf6;
+    border-top: 1px solid #eee;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    header h1 { font-size: 20px; }
+    .question-box, .button-row { padding-left: 18px; padding-right: 18px; }
+    .word-card { font-size: 15px; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="unit-badge">UNIT 09</span>
+    <h1>복잡한 목적어 — 어순 배열 연습</h1>
+    <p>의문사절이 목적어로 쓰일 때의 어순: <strong>주어 + 동사 + (의문사 + 주어 + 동사)</strong></p>
+  </header>
+
+  <div class="status-bar" id="statusBar">
+    <span>📘 문제 <span class="progress-num" id="progressNum">1</span> / 10</span>
+    <span>점수 <span class="score" id="scoreNum">0</span> / 10</span>
+  </div>
+
+  <div id="quizArea">
+    <div class="question-box">
+      <div class="korean-sentence" id="koreanSentence"></div>
+      <div class="answer-area" id="answerArea"></div>
+      <div class="word-pool" id="wordPool"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="button-row">
+      <button class="action reset" id="resetBtn">↺ 다시</button>
+      <button class="action check" id="checkBtn">✓ 정답 확인</button>
+      <button class="action next" id="nextBtn" disabled>다음 →</button>
+    </div>
+  </div>
+
+  <div class="final-screen" id="finalScreen">
+    <h2>🎉 모든 문제를 다 풀었어요!</h2>
+    <div class="score-big"><span id="finalScore">0</span> / 10</div>
+    <p class="comment" id="finalComment"></p>
+    <button onclick="restartQuiz()">🔄 새 문제 다시 풀기</button>
+  </div>
+
+  <footer>Unit 09 복잡한 목적어 · 중학교 기초 · 의문사절 어순 배열</footer>
+</div>
+
+<script>
+  // 10 questions: Korean sentence, scrambled words (in correct order), correct answer
+  const QUESTIONS = [
+    {
+      ko: "나는 그녀가 어디에서 일하는지 모른다.",
+      words: ["I", "don't", "know", "where", "she", "works"],
+      answer: "I don't know where she works"
+    },
+    {
+      ko: "아무도 그가 언제 돌아올지 모른다.",
+      words: ["No", "one", "knows", "when", "he", "will", "be", "back"],
+      answer: "No one knows when he will be back"
+    },
+    {
+      ko: "너는 그들이 어디에 사는지 아니?",
+      words: ["Do", "you", "know", "where", "they", "live"],
+      answer: "Do you know where they live"
+    },
+    {
+      ko: "나는 무엇을 입어야 할지 물었다.",
+      words: ["I", "asked", "what", "I", "should", "wear"],
+      answer: "I asked what I should wear"
+    },
+    {
+      ko: "Andy는 그녀가 왜 울었는지 알지도 모른다.",
+      words: ["Andy", "may", "know", "why", "she", "cried"],
+      answer: "Andy may know why she cried"
+    },
+    {
+      ko: "너는 내가 너를 얼마나 사랑하는지 아니?",
+      words: ["Do", "you", "know", "how", "much", "I", "love", "you"],
+      answer: "Do you know how much I love you"
+    },
+    {
+      ko: "다음 기차가 언제인지 나에게 말해 줄래?",
+      words: ["Could", "you", "tell", "me", "when", "the", "next", "train", "is"],
+      answer: "Could you tell me when the next train is"
+    },
+    {
+      ko: "나는 그들의 비밀이 무엇인지 궁금하다.",
+      words: ["I", "wonder", "what", "their", "secret", "is"],
+      answer: "I wonder what their secret is"
+    },
+    {
+      ko: "나는 그녀가 무엇을 원하는지 모른다.",
+      words: ["I", "don't", "know", "what", "she", "wants"],
+      answer: "I don't know what she wants"
+    },
+    {
+      ko: "누구 아세요? 몇 시인지?",
+      words: ["Does", "anybody", "know", "what", "time", "it", "is"],
+      answer: "Does anybody know what time it is"
+    }
+  ];
+
+  // ----- Game state -----
+  let currentOrder = [];
+  let currentIdx = 0;
+  let score = 0;
+  let placed = []; // indices of words clicked, in order
+  let currentQ = null;
+  let answered = false; // whether checked already
+  let scoredThisRound = false;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startQuiz() {
+    currentOrder = shuffle([...Array(QUESTIONS.length).keys()]);
+    currentIdx = 0;
+    score = 0;
+    document.getElementById('finalScreen').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    answered = false;
+    scoredThisRound = false;
+    placed = [];
+    const qIndex = currentOrder[currentIdx];
+    currentQ = QUESTIONS[qIndex];
+
+    document.getElementById('progressNum').textContent = currentIdx + 1;
+    document.getElementById('scoreNum').textContent = score;
+    document.getElementById('koreanSentence').textContent = currentQ.ko;
+    document.getElementById('answerArea').innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('checkBtn').disabled = false;
+
+    // Build shuffled word indices (so identical words can be tracked)
+    const wordIndices = shuffle([...Array(currentQ.words.length).keys()]);
+    const pool = document.getElementById('wordPool');
+    pool.innerHTML = '';
+    wordIndices.forEach(idx => {
+      const card = document.createElement('div');
+      card.className = 'word-card';
+      card.textContent = currentQ.words[idx];
+      card.dataset.idx = idx;
+      card.addEventListener('click', () => onWordClick(card));
+      pool.appendChild(card);
+    });
+
+    document.getElementById('nextBtn').textContent =
+      (currentIdx === QUESTIONS.length - 1) ? '결과 보기 🏁' : '다음 →';
+  }
+
+  function onWordClick(card) {
+    if (answered) return;
+    const idx = parseInt(card.dataset.idx);
+    if (card.classList.contains('placed')) {
+      // remove from answer area
+      card.classList.remove('placed');
+      placed = placed.filter(i => i !== idx);
+    } else {
+      card.classList.add('placed');
+      placed.push(idx);
+    }
+    renderAnswerArea();
+  }
+
+  function renderAnswerArea() {
+    const area = document.getElementById('answerArea');
+    area.innerHTML = '';
+    placed.forEach(idx => {
+      const span = document.createElement('div');
+      span.className = 'word-card placed';
+      span.textContent = currentQ.words[idx];
+      span.dataset.idx = idx;
+      span.addEventListener('click', () => {
+        if (answered) return;
+        // remove this from placed and unmark in pool
+        placed = placed.filter(i => i !== idx);
+        const poolCard = document.querySelector(`#wordPool .word-card[data-idx="${idx}"]`);
+        if (poolCard) poolCard.classList.remove('placed');
+        renderAnswerArea();
+      });
+      area.appendChild(span);
+    });
+  }
+
+  function checkAnswer() {
+    if (answered) return;
+    if (placed.length !== currentQ.words.length) {
+      alert('단어를 모두 사용해서 문장을 완성해 주세요!');
+      return;
+    }
+    answered = true;
+    document.getElementById('checkBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = false;
+
+    const userSentence = placed.map(i => currentQ.words[i]).join(' ');
+    const fb = document.getElementById('feedback');
+    if (userSentence === currentQ.answer) {
+      if (!scoredThisRound) { score++; scoredThisRound = true; }
+      document.getElementById('scoreNum').textContent = score;
+      fb.className = 'feedback correct';
+      fb.innerHTML = `<strong>✅ 정답입니다! 잘했어요!</strong>
+        <div class="answer-line">${currentQ.answer}.</div>`;
+    } else {
+      fb.className = 'feedback wrong';
+      fb.innerHTML = `<strong>❌ 아쉬워요. 정답은 다음과 같아요:</strong>
+        <div class="answer-line">${currentQ.answer}.</div>
+        <div style="margin-top:6px; font-size:13px; color:#666;">
+        💡 <b>의문사절 어순:</b> 주어 + 동사 + (<b>의문사 + 주어 + 동사</b>) 순서로!
+        </div>`;
+    }
+    fb.style.display = 'block';
+  }
+
+  function resetCurrent() {
+    if (answered) return;
+    placed = [];
+    document.querySelectorAll('#wordPool .word-card').forEach(c => c.classList.remove('placed'));
+    renderAnswerArea();
+  }
+
+  function nextQuestion() {
+    currentIdx++;
+    if (currentIdx >= QUESTIONS.length) {
+      showFinal();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  function showFinal() {
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('statusBar').style.display = 'none';
+    document.getElementById('finalScreen').style.display = 'block';
+    document.getElementById('finalScore').textContent = score;
+    let comment = '';
+    if (score === 10) comment = '완벽해요! 🌟 의문사절 어순을 완전히 마스터했네요!';
+    else if (score >= 8) comment = '아주 잘했어요! 👏 조금만 더 연습하면 완벽!';
+    else if (score >= 6) comment = '잘했어요! 😊 헷갈렸던 문제를 다시 한번 살펴봐요.';
+    else if (score >= 4) comment = '괜찮아요! 💪 어순 규칙을 다시 보고 도전!';
+    else comment = '천천히 한 번 더 풀어 봐요. 🙂 의문사+주어+동사 어순을 기억하세요!';
+    document.getElementById('finalComment').textContent = comment;
+  }
+
+  function restartQuiz() { startQuiz(); }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('resetBtn').addEventListener('click', resetCurrent);
+  document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+
+  // start
+  startQuiz();
+</script>
+</body>
+</html>
