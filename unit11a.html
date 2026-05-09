@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 11-A. 목적격 보어 (명사/형용사) - 어순 배열</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: linear-gradient(135deg, #d8f5f0 0%, #a8e0d4 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  header {
+    background: linear-gradient(135deg, #26a69a 0%, #00796b 100%);
+    color: #fff;
+    padding: 24px 28px;
+    position: relative;
+  }
+  header .unit-badge {
+    display: inline-block;
+    background: #2e7d4f;
+    color: #fff;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  header h1 { font-size: 24px; font-weight: 800; }
+  header p { font-size: 14px; margin-top: 6px; opacity: 0.95; }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px;
+    background: #f0faf7;
+    border-bottom: 1px solid #ececec;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+  }
+  .status-bar .score { color: #2e7d4f; }
+  .status-bar .progress-num { color: #00796b; }
+
+  .question-box { padding: 26px 28px 8px; }
+  .korean-sentence {
+    background: #f3faf5;
+    border-left: 4px solid #2e7d4f;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 17px;
+    color: #1f4d33;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .korean-sentence::before {
+    content: "🇰🇷 우리말: ";
+    color: #2e7d4f;
+    font-weight: 700;
+  }
+  .answer-area {
+    min-height: 64px;
+    background: #e6f7f3;
+    border: 2px dashed #26a69a;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+    align-content: flex-start;
+    margin-bottom: 16px;
+  }
+  .answer-area:empty::after {
+    content: "👇 아래 단어 카드를 순서대로 눌러 문장을 만들어 보세요";
+    color: #2d7a70;
+    font-size: 14px;
+    margin: auto;
+  }
+  .word-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 0 4px;
+    min-height: 64px;
+  }
+  .word-card {
+    background: #fff;
+    border: 2px solid #26a69a;
+    color: #00564a;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+    user-select: none;
+  }
+  .word-card:hover { background: #d8f5f0; transform: translateY(-1px); }
+  .word-card.placed {
+    background: #2e7d4f;
+    border-color: #1f5b39;
+    color: #fff;
+  }
+  .word-card.placed:hover { background: #266940; }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 28px 26px;
+    flex-wrap: wrap;
+  }
+  button.action {
+    flex: 1;
+    min-width: 110px;
+    border: none;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  button.check { background: #2e7d4f; color: #fff; }
+  button.check:hover { background: #1f5b39; }
+  button.reset { background: #fff; color: #00564a; border: 2px solid #26a69a; }
+  button.reset:hover { background: #d8f5f0; }
+  button.next { background: #26a69a; color: #fff; }
+  button.next:hover { background: #00796b; }
+  button.action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .feedback {
+    margin: 0 28px 22px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.correct {
+    background: #e6f7ec;
+    border-left: 4px solid #2e7d4f;
+    color: #1f5b39;
+  }
+  .feedback.wrong {
+    background: #fdecea;
+    border-left: 4px solid #d93025;
+    color: #8a1d12;
+  }
+  .feedback strong { font-weight: 800; }
+  .feedback .answer-line {
+    margin-top: 6px;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Georgia', serif;
+    color: #222;
+    font-size: 15px;
+  }
+
+  .final-screen {
+    display: none;
+    padding: 40px 28px;
+    text-align: center;
+  }
+  .final-screen h2 { font-size: 26px; color: #00796b; margin-bottom: 12px; }
+  .final-screen .score-big {
+    font-size: 56px;
+    font-weight: 800;
+    color: #26a69a;
+    margin: 16px 0;
+  }
+  .final-screen .comment {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+  }
+  .final-screen button {
+    padding: 14px 32px;
+    background: #2e7d4f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .final-screen button:hover { background: #1f5b39; }
+
+  footer {
+    text-align: center;
+    padding: 14px;
+    font-size: 12px;
+    color: #999;
+    background: #fafaf6;
+    border-top: 1px solid #eee;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    header h1 { font-size: 20px; }
+    .question-box, .button-row { padding-left: 18px; padding-right: 18px; }
+    .word-card { font-size: 15px; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="unit-badge">UNIT 11 - A</span>
+    <h1>목적격 보어 — 명사/형용사 어순 배열</h1>
+    <p>목적격 보어 어순: <strong>주어 + 동사 + 목적어(O) + 목적격 보어(OC: 명사/형용사)</strong></p>
+  </header>
+
+  <div class="status-bar" id="statusBar">
+    <span>📘 문제 <span class="progress-num" id="progressNum">1</span> / 10</span>
+    <span>점수 <span class="score" id="scoreNum">0</span> / 10</span>
+  </div>
+
+  <div id="quizArea">
+    <div class="question-box">
+      <div class="korean-sentence" id="koreanSentence"></div>
+      <div class="answer-area" id="answerArea"></div>
+      <div class="word-pool" id="wordPool"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="button-row">
+      <button class="action reset" id="resetBtn">↺ 다시</button>
+      <button class="action check" id="checkBtn">✓ 정답 확인</button>
+      <button class="action next" id="nextBtn" disabled>다음 →</button>
+    </div>
+  </div>
+
+  <div class="final-screen" id="finalScreen">
+    <h2>🎉 모든 문제를 다 풀었어요!</h2>
+    <div class="score-big"><span id="finalScore">0</span> / 10</div>
+    <p class="comment" id="finalComment"></p>
+    <button onclick="restartQuiz()">🔄 새 문제 다시 풀기</button>
+  </div>
+
+  <footer>Unit 11-A 목적격 보어 · 중학교 기초 · make/name/call/keep/leave/find + O + 명사·형용사</footer>
+</div>
+
+<script>
+  // 10 questions: object complements (S + V + O + OC: noun/adjective)
+  const QUESTIONS = [
+    {
+      ko: "그 영화는 그를 스타로 만들었다.",
+      words: ["The", "movie", "made", "him", "a", "star"],
+      answer: "The movie made him a star"
+    },
+    {
+      ko: "이 노래는 언제나 나를 슬프게 한다.",
+      words: ["This", "song", "always", "makes", "me", "sad"],
+      answer: "This song always makes me sad"
+    },
+    {
+      ko: "나는 내 개를 Henry라고 이름 지었다.",
+      words: ["I", "named", "my", "dog", "Henry"],
+      answer: "I named my dog Henry"
+    },
+    {
+      ko: "이 코트는 너를 따뜻하게 해 줄 것이다.",
+      words: ["This", "coat", "will", "keep", "you", "warm"],
+      answer: "This coat will keep you warm"
+    },
+    {
+      ko: "너는 나를 행복하게 한다.",
+      words: ["You", "make", "me", "happy"],
+      answer: "You make me happy"
+    },
+    {
+      ko: "그녀는 그녀의 아기를 Jennifer라고 이름 지었다.",
+      words: ["She", "named", "her", "baby", "Jennifer"],
+      answer: "She named her baby Jennifer"
+    },
+    {
+      ko: "그녀는 항상 자신의 방을 깨끗하게 유지한다.",
+      words: ["She", "always", "keeps", "her", "room", "clean"],
+      answer: "She always keeps her room clean"
+    },
+    {
+      ko: "저를 혼자 둬 주세요.",
+      words: ["Please", "leave", "me", "alone"],
+      answer: "Please leave me alone"
+    },
+    {
+      ko: "나는 그가 흥미롭다는 것을 알았다.",
+      words: ["I", "found", "him", "interesting"],
+      answer: "I found him interesting"
+    },
+    {
+      ko: "저를 Ted라고 불러 주세요.",
+      words: ["Please", "call", "me", "Ted"],
+      answer: "Please call me Ted"
+    }
+  ];
+
+  let currentOrder = [];
+  let currentIdx = 0;
+  let score = 0;
+  let placed = [];
+  let currentQ = null;
+  let answered = false;
+  let scoredThisRound = false;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startQuiz() {
+    currentOrder = shuffle([...Array(QUESTIONS.length).keys()]);
+    currentIdx = 0;
+    score = 0;
+    document.getElementById('finalScreen').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    document.getElementById('statusBar').style.display = 'flex';
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    answered = false;
+    scoredThisRound = false;
+    placed = [];
+    const qIndex = currentOrder[currentIdx];
+    currentQ = QUESTIONS[qIndex];
+
+    document.getElementById('progressNum').textContent = currentIdx + 1;
+    document.getElementById('scoreNum').textContent = score;
+    document.getElementById('koreanSentence').textContent = currentQ.ko;
+    document.getElementById('answerArea').innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('checkBtn').disabled = false;
+
+    const wordIndices = shuffle([...Array(currentQ.words.length).keys()]);
+    const pool = document.getElementById('wordPool');
+    pool.innerHTML = '';
+    wordIndices.forEach(idx => {
+      const card = document.createElement('div');
+      card.className = 'word-card';
+      card.textContent = currentQ.words[idx];
+      card.dataset.idx = idx;
+      card.addEventListener('click', () => onWordClick(card));
+      pool.appendChild(card);
+    });
+
+    document.getElementById('nextBtn').textContent =
+      (currentIdx === QUESTIONS.length - 1) ? '결과 보기 🏁' : '다음 →';
+  }
+
+  function onWordClick(card) {
+    if (answered) return;
+    const idx = parseInt(card.dataset.idx);
+    if (card.classList.contains('placed')) {
+      card.classList.remove('placed');
+      placed = placed.filter(i => i !== idx);
+    } else {
+      card.classList.add('placed');
+      placed.push(idx);
+    }
+    renderAnswerArea();
+  }
+
+  function renderAnswerArea() {
+    const area = document.getElementById('answerArea');
+    area.innerHTML = '';
+    placed.forEach(idx => {
+      const span = document.createElement('div');
+      span.className = 'word-card placed';
+      span.textContent = currentQ.words[idx];
+      span.dataset.idx = idx;
+      span.addEventListener('click', () => {
+        if (answered) return;
+        placed = placed.filter(i => i !== idx);
+        const poolCard = document.querySelector(`#wordPool .word-card[data-idx="${idx}"]`);
+        if (poolCard) poolCard.classList.remove('placed');
+        renderAnswerArea();
+      });
+      area.appendChild(span);
+    });
+  }
+
+  function checkAnswer() {
+    if (answered) return;
+    if (placed.length !== currentQ.words.length) {
+      alert('단어를 모두 사용해서 문장을 완성해 주세요!');
+      return;
+    }
+    answered = true;
+    document.getElementById('checkBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = false;
+
+    const userSentence = placed.map(i => currentQ.words[i]).join(' ');
+    const fb = document.getElementById('feedback');
+    if (userSentence === currentQ.answer) {
+      if (!scoredThisRound) { score++; scoredThisRound = true; }
+      document.getElementById('scoreNum').textContent = score;
+      fb.className = 'feedback correct';
+      fb.innerHTML = `<strong>✅ 정답입니다! 잘했어요!</strong>
+        <div class="answer-line">${currentQ.answer}.</div>`;
+    } else {
+      fb.className = 'feedback wrong';
+      fb.innerHTML = `<strong>❌ 아쉬워요. 정답은 다음과 같아요:</strong>
+        <div class="answer-line">${currentQ.answer}.</div>
+        <div style="margin-top:6px; font-size:13px; color:#666;">
+        💡 <b>목적격 보어 어순:</b> 주어 + 동사 + <b>목적어(O)</b> + <b>목적격 보어(OC)</b> (make/name/call/keep/leave/find)
+        </div>`;
+    }
+    fb.style.display = 'block';
+  }
+
+  function resetCurrent() {
+    if (answered) return;
+    placed = [];
+    document.querySelectorAll('#wordPool .word-card').forEach(c => c.classList.remove('placed'));
+    renderAnswerArea();
+  }
+
+  function nextQuestion() {
+    currentIdx++;
+    if (currentIdx >= QUESTIONS.length) {
+      showFinal();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  function showFinal() {
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('statusBar').style.display = 'none';
+    document.getElementById('finalScreen').style.display = 'block';
+    document.getElementById('finalScore').textContent = score;
+    let comment = '';
+    if (score === 10) comment = '완벽해요! 🌟 목적격 보어 어순을 완전히 마스터했네요!';
+    else if (score >= 8) comment = '아주 잘했어요! 👏 V+O+OC 패턴이 익숙해졌네요!';
+    else if (score >= 6) comment = '잘했어요! 😊 헷갈렸던 문제를 다시 살펴봐요.';
+    else if (score >= 4) comment = '괜찮아요! 💪 동사+목적어 뒤에 명사·형용사가 와요!';
+    else comment = '천천히 한 번 더 풀어 봐요. 🙂 make/name/call/keep + O + 명사·형용사!';
+    document.getElementById('finalComment').textContent = comment;
+  }
+
+  function restartQuiz() { startQuiz(); }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('resetBtn').addEventListener('click', resetCurrent);
+  document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+
+  startQuiz();
+</script>
+</body>
+</html>
