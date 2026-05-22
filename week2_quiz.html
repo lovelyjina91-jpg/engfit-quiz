@@ -356,15 +356,24 @@
         <span class="badge" id="totalBadge">총 000개 단어</span>
       </div>
 
-      <div style="font-size:0.8em; color:#999; margin-bottom:20px;">영어 ↔ 한국어 랜덤 출제</div>
+      <div style="font-size:0.8em; color:#999; margin-bottom:16px;">영어 ↔ 한국어 랜덤 출제 · 매번 새로운 구성</div>
 
-      <button class="start-btn" onclick="startQuiz()">시작하기 ✍️</button>
+      <div class="section-label" style="text-align:center; margin-bottom:10px;">파트 선택 <span id="partSizeLabel" style="font-weight:400;"></span></div>
+      <div class="mode-row">
+        <button class="opt-btn" onclick="startQuiz(0)">Part 1</button>
+        <button class="opt-btn" onclick="startQuiz(1)">Part 2</button>
+        <button class="opt-btn" onclick="startQuiz(2)">Part 3</button>
+        <button class="opt-btn" onclick="startQuiz(3)">Part 4</button>
+      </div>
     </div>
   </div>
 
   <!-- ══ 퀴즈 화면 ══ -->
   <div id="quizScreen" class="screen">
-    <div class="brand-tag">EngFit</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+      <div class="brand-tag" style="margin-bottom:0;">EngFit</div>
+      <span id="partTag" style="font-size:0.8em;color:#aaa;font-family:'Patrick Hand',cursive;letter-spacing:1px;">Part -</span>
+    </div>
     <div class="prog-row">
       <span class="prog-text" id="progText">0 / 0</span>
       <span class="score-text" id="scoreText">✅ 0</span>
@@ -816,11 +825,13 @@ let quizWords = []; // [word, isEnKr]
 let current = 0;
 let correctCount = 0;
 let wrongWords = [];
+let currentPart = 1;
 
 // ────────────────────────────────────────────────
 //  초기화
 // ────────────────────────────────────────────────
 document.getElementById('totalBadge').textContent = `총 ${allWords.length}개 단어`;
+document.getElementById('partSizeLabel').textContent = `(파트당 약 ${Math.ceil(allWords.length / 4)}개)`;
 
 // ────────────────────────────────────────────────
 //  화면 전환
@@ -845,12 +856,16 @@ function shuffle(arr) {
   return a;
 }
 
-function startQuiz() {
-  // 각 단어마다 방향을 랜덤 지정
-  quizWords = shuffle(allWords).map(w => [w, Math.random() < 0.5]);
+function startQuiz(partIdx) {
+  currentPart = partIdx + 1;
+  const shuffled = shuffle(allWords);
+  const partSize = Math.ceil(shuffled.length / 4);
+  const partWords = shuffled.slice(partIdx * partSize, (partIdx + 1) * partSize);
+  quizWords = partWords.map(w => [w, Math.random() < 0.5]);
   current = 0;
   correctCount = 0;
   wrongWords = [];
+  document.getElementById('partTag').textContent = 'Part ' + currentPart;
   showScreen('quizScreen');
   renderQuestion();
 }
@@ -958,7 +973,7 @@ function copyResult() {
   const total = quizWords.length;
   const pct = Math.round((correctCount / total) * 100);
 
-  let text = `📚 Week 2 단어 테스트 결과\n`;
+  let text = `📚 Week 2 단어 테스트 결과 (Part ${currentPart})\n`;
   text += `━━━━━━━━━━━━━━━━━\n`;
   text += `✅ 정답: ${correctCount}개  ❌ 오답: ${wrongWords.length}개\n`;
   text += `📊 정답률: ${pct}% (${total}문제)\n`;
@@ -990,4 +1005,3 @@ function copyResult() {
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                     
