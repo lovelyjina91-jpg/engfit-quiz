@@ -965,6 +965,26 @@ function copyResult() {
     setTimeout(() => { msg.textContent = ''; }, 3000);
   });
 }
+
+// ────────────────────────────────────────────────
+//  키보드 단축키 (숫자 1~4)
+// ────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (!['1','2','3','4'].includes(e.key)) return;
+  const idx = parseInt(e.key) - 1;
+  const active = document.querySelector('.screen.active');
+  if (!active) return;
+
+  if (active.id === 'startScreen') {
+    // 파트 선택 버튼
+    const btns = active.querySelectorAll('.opt-btn');
+    if (btns[idx]) btns[idx].click();
+  } else if (active.id === 'quizScreen') {
+    // 선택지 버튼 (비활성화 안된 것만)
+    const btns = document.querySelectorAll('#choices .choice-btn:not([disabled])');
+    if (btns[idx]) btns[idx].click();
+  }
+});
 </script>
 </body>
 </html>
