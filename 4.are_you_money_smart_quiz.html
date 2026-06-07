@@ -2,563 +2,215 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EngFit 단어 테스트 · Dreaming of My Future</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Are You Money Smart? | 중2 영어 대화 순서 퀴즈</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-  :root{
-    --navy:#1f2a52;
-    --navy-d:#16203f;
-    --navy-l:#27336b;
-    --gold:#f0a830;
-    --gold-d:#d68f15;
-    --cream:#fdf9f0;
-    --card:#ffffff;
-    --ink:#1f2a52;
-    --sub:#7c879e;
-    --green:#16a673;
-    --green-bg:#e6f8f0;
-    --red:#e5484d;
-    --red-bg:#fdeced;
-    --line:#e9e4d8;
-    --shadow:0 14px 36px rgba(13,19,43,.38);
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{
-    font-family:'Noto Sans KR',sans-serif;
-    color:var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    min-height:100dvh;padding:16px;
-    background:
-      radial-gradient(circle at 50% -10%, rgba(240,168,48,.30) 0%, rgba(240,168,48,0) 42%),
-      radial-gradient(circle at 12% 88%, rgba(240,168,48,.12) 0%, rgba(240,168,48,0) 30%),
-      linear-gradient(165deg,#27336b 0%, #1f2a52 45%, #16203f 100%);
-    position:relative;overflow-x:hidden;
-  }
-  /* retro badge motifs on background */
-  body::before, body::after{
-    content:'';position:fixed;border-radius:50%;pointer-events:none;
-    border:2px dashed rgba(240,168,48,.28);
-  }
-  body::before{width:340px;height:340px;top:-130px;right:-110px;}
-  body::after{width:260px;height:260px;bottom:-100px;left:-90px;}
-  .eng{font-family:'Patrick Hand',cursive;}
-  .app{
-    width:100%;max-width:460px;background:var(--card);
-    border-radius:26px;box-shadow:var(--shadow);
-    overflow:hidden;position:relative;min-height:620px;
-    display:flex;flex-direction:column;z-index:1;
-    border:1px solid rgba(240,168,48,.35);
-  }
-  .logo{display:flex;align-items:center;}
-  .logo svg{display:block;}
-  .screen{flex:1;display:none;flex-direction:column;padding:26px 22px 24px;}
-  .screen.on{display:flex;}
-
-  /* START */
-  #start{align-items:center;justify-content:center;text-align:center;gap:6px;
-    background:
-      radial-gradient(circle at 50% 0%, rgba(240,168,48,.10) 0%, rgba(240,168,48,0) 55%),
-      var(--cream);
-  }
-  #start .badge{
-    margin:6px 0 12px;width:190px;height:190px;border-radius:50%;
-    background:#fff;border:2.5px solid var(--navy);
-    box-shadow:0 0 0 7px var(--cream), 0 0 0 9px rgba(240,168,48,.85), 0 14px 26px rgba(31,42,82,.18);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    position:relative;
-  }
-  .badge .star{color:var(--gold);font-size:15px;letter-spacing:5px;}
-  #start h1{margin:10px 0 2px;font-size:1.5em;font-weight:900;color:var(--navy);}
-  #start .unit{font-family:'Patrick Hand',cursive;font-size:1.32em;color:var(--gold-d);}
-  #start .meta{margin-top:5px;font-size:.92em;color:var(--sub);}
-  .btn{
-    border:none;border-radius:16px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;
-    font-weight:700;transition:transform .08s, box-shadow .2s, background .2s;
-  }
-  .btn:active{transform:scale(.97);}
-  .btn-primary{
-    background:var(--navy);color:#fff;font-size:1.08em;padding:16px 20px;width:100%;
-    box-shadow:0 8px 18px rgba(31,42,82,.35);
-  }
-  .btn-primary:active{background:var(--navy-d);}
-  #start .startwrap{width:100%;margin-top:20px;}
-
-  /* QUIZ */
-  #quiz{padding-top:18px;background:#fff;}
-  .qtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .count{font-size:.92em;color:var(--sub);font-weight:700;}
-  .bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:24px;}
-  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#f6c465);border-radius:99px;transition:width .3s;}
-  .prompt{
-    flex:0 0 auto;min-height:120px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;gap:8px;margin-bottom:22px;
-  }
-  .qtag{font-size:.82em;font-weight:700;color:var(--gold-d);background:rgba(240,168,48,.14);padding:5px 12px;border-radius:99px;}
-  .qword-en{font-family:'Patrick Hand',cursive;font-size:2.6em;line-height:1.1;color:var(--navy);}
-  .qword-ko{font-family:'Noto Sans KR',sans-serif;font-size:1.65em;font-weight:700;line-height:1.3;color:var(--navy);}
-  .choices{display:flex;flex-direction:column;gap:11px;margin-top:auto;}
-  .choice{
-    width:100%;text-align:center;background:#fff;border:2px solid var(--line);
-    border-radius:16px;padding:15px 14px;cursor:pointer;color:var(--ink);
-    transition:border-color .15s, background .15s, transform .08s;
-  }
-  .choice:active{transform:scale(.98);}
-  .choice.ko{font-family:'Noto Sans KR',sans-serif;font-size:0.96em;font-weight:500;}
-  .choice.en{font-family:'Patrick Hand',cursive;font-size:1.44em;}
-  .choice.correct{border-color:var(--green);background:var(--green-bg);color:var(--green);font-weight:700;}
-  .choice.wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
-  .choice.lock{pointer-events:none;}
-  .choice .num{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:22px;height:22px;border-radius:7px;margin-right:9px;
-    background:rgba(31,42,82,.07);color:var(--sub);
-    font-family:'Noto Sans KR',sans-serif;font-size:.72rem;font-weight:700;vertical-align:middle;
-  }
-  .choice.correct .num{background:rgba(22,166,115,.15);color:var(--green);}
-  .choice.wrong .num{background:rgba(229,72,77,.15);color:var(--red);}
-
-  /* 주관식 */
-  .typebox{display:flex;flex-direction:column;gap:11px;margin-top:auto;}
-  .typebox input{
-    width:100%;text-align:center;background:#fff;border:2px solid var(--line);
-    border-radius:16px;padding:14px;color:var(--ink);outline:none;
-    font-family:'Patrick Hand',cursive;font-size:1.44em;
-    transition:border-color .15s, background .15s;
-  }
-  .typebox input:focus{border-color:var(--gold);}
-  .typebox input.correct{border-color:var(--green);background:var(--green-bg);color:var(--green);font-weight:700;}
-  .typebox input.wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
-  .typeanswer{
-    text-align:center;font-size:1em;color:var(--green);font-weight:700;display:none;
-  }
-  .typeanswer .eng{font-size:1.35em;}
-  .typehint{text-align:center;font-size:.8em;color:var(--sub);}
-  .kbdhint{margin-top:10px;font-size:.8em;color:var(--sub);}
-  .kbdhint b{color:var(--gold-d);}
-
-  /* RESULT */
-  #result{padding-top:20px;
-    background:
-      radial-gradient(circle at 50% 0%, rgba(240,168,48,.10) 0%, rgba(240,168,48,0) 50%),
-      var(--cream);
-  }
-  #result .logo{justify-content:center;margin-bottom:8px;}
-  .scorecard{text-align:center;margin:6px 0 18px;}
-  .scorecard .emoji{font-size:46px;}
-  .scorecard .score{font-size:2.4em;font-weight:900;margin-top:4px;color:var(--navy);}
-  .scorecard .score small{font-size:.42em;color:var(--sub);font-weight:700;}
-  .scorecard .pct{font-size:1em;color:var(--gold-d);font-weight:700;margin-top:2px;}
-  .reviewhead{font-size:.95em;font-weight:700;margin:6px 2px 10px;display:flex;justify-content:space-between;align-items:center;color:var(--navy);}
-  .reviewhead .ok{color:var(--green);font-size:.92em;}
-  .review{display:flex;flex-direction:column;gap:9px;max-height:240px;overflow-y:auto;padding:2px;}
-  .ritem{border:1.5px solid var(--red-bg);background:#fff;border-radius:14px;padding:11px 13px;border-left:5px solid var(--red);}
-  .ritem .q{font-size:.8em;color:var(--sub);font-weight:600;margin-bottom:3px;}
-  .ritem .ans{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:.95em;}
-  .ritem .yours{color:var(--red);} .ritem .yours s{opacity:.8;}
-  .ritem .right{color:var(--green);font-weight:700;}
-  .ritem b.eng{font-family:'Patrick Hand',cursive;font-size:1.2em;font-weight:400;color:var(--navy);}
-  .allright{text-align:center;color:var(--green);font-weight:700;padding:18px;background:var(--green-bg);border-radius:14px;}
-  .actions{margin-top:16px;display:flex;flex-direction:column;gap:10px;}
-  .btn-kakao{background:#FEE500;color:#3a1d1d;font-size:1.04em;padding:15px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;}
-  .btn-ghost{background:#efe9db;color:var(--navy);font-size:1em;padding:14px;width:100%;}
-  .toast{
-    position:absolute;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
-    background:var(--navy);color:#fff;padding:11px 18px;border-radius:99px;font-size:.9em;font-weight:600;
-    opacity:0;pointer-events:none;transition:.25s;white-space:nowrap;
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+:root{--g:#1B4332;--g2:#103826;--gl:#E8F5EE;--rd:#B91C1C;--rdl:#FEF2F2;--bg:#F4F3EF;--sf:#FFFFFF;--dk:#141410;--br:#E3E2DC;--tx:#141410;--tx2:#5A5A52;--tx3:#9A9A92;--r:12px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:15px;line-height:1.6}
+.site-header{background:var(--dk);padding:14px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:20}
+.hicon{width:38px;height:38px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px;letter-spacing:-.5px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.htxt h1{font-size:15px;font-weight:800;letter-spacing:-0.02em;color:#fff;text-transform:uppercase}
+.htxt p{font-size:11px;color:#8a8a82;margin-top:1px}
+.htxt p b{color:#6FCF97}
+.hscore{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:6px 13px;border-radius:99px}
+main{max-width:680px;margin:0 auto;padding:22px 16px 90px}
+.pw{margin-bottom:18px}
+.pr{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--tx3);margin-bottom:8px}
+.pl{font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.pn{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--tx2)}
+.pb{height:5px;background:var(--br);border-radius:99px;overflow:hidden}
+.pbi{height:100%;border-radius:99px;background:var(--g);transition:width .4s}
+.card{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.qs{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--g);letter-spacing:.08em;text-transform:uppercase}
+.qko{font-size:13px;color:var(--tx2);margin-top:4px;margin-bottom:14px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:99px;background:var(--gl);color:var(--g2);border:1px solid var(--g);margin-bottom:12px}
+.slbl{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
+.line{background:var(--bg);border:1.5px solid var(--br);border-radius:10px;padding:11px 14px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.lt{font-size:14.5px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--g);background:var(--gl);border:1.5px solid var(--g);min-width:26px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-top:2px;flex-shrink:0}
+.line.given .chip{background:var(--dk);border-color:var(--dk);color:#fff}
+.line.target{border-style:dashed;border-color:var(--g);background:var(--gl)}
+.blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--g);color:var(--g);font-weight:800;text-align:center;font-family:'JetBrains Mono',monospace}
+.opt{display:block;width:100%;text-align:left;background:var(--sf);border:1.5px solid var(--br);border-radius:10px;padding:12px 15px;margin-bottom:9px;font-size:14.5px;font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s;line-height:1.55;color:var(--tx)}
+.opt:hover:not(:disabled){border-color:var(--g);background:var(--gl)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--g);background:var(--gl);color:var(--g2);font-weight:600}
+.opt.ng{border-color:var(--rd);background:var(--rdl);color:var(--rd)}
+.opt .seq{font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.03em}
+.onum{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--tx3);margin-right:9px}
+.qprompt{font-size:14px;font-weight:700;margin:16px 0 12px}
+.qprompt .mono{font-family:'JetBrains Mono',monospace;color:var(--g)}
+.fb{border-radius:10px;padding:12px 15px;font-size:13.5px;font-weight:600;margin-top:12px;animation:drop .3s ease}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.fbok{background:var(--gl);color:var(--g2);border:1.5px solid var(--g)}
+.fbng{background:var(--rdl);color:var(--rd);border:1.5px solid var(--rd)}
+.fbng .ans{display:block;margin-top:5px;font-weight:700}
+.fbex{background:#FFFBEB;color:#7C5800;border:1.5px solid #E7C45A;font-weight:500;line-height:1.65}
+.fbex b{font-weight:800}
+.btn{border:none;border-radius:9px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btnp{background:var(--g);color:#fff}
+.btnp:hover{background:var(--g2)}
+.btnrow{margin-top:14px}
+.start,.result{background:var(--dk);border-radius:18px;padding:44px 28px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.start::after,.result::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:var(--g);border-radius:50%;opacity:.35}
+.unit-tag{display:inline-block;font-size:13px;font-weight:700;color:#6FCF97;border:1.5px solid #6FCF97;border-radius:99px;padding:6px 16px;margin-bottom:18px;letter-spacing:.02em;position:relative;z-index:1}
+.bigt{font-size:34px;font-weight:900;letter-spacing:-0.03em;line-height:1.15;text-transform:uppercase;position:relative;z-index:1}
+.bigt .acc{color:#6FCF97}
+.subt{font-size:14px;color:#a8a8a0;margin-top:12px;position:relative;z-index:1}
+.start .btn,.result .btn{margin-top:26px;position:relative;z-index:1;font-size:15px;padding:14px 34px}
+.scorebig{font-family:'JetBrains Mono',monospace;font-size:52px;font-weight:700;margin-top:18px;position:relative;z-index:1}
+.scorebig small{font-size:20px;color:#a8a8a0}
 </style>
 </head>
 <body>
-<div class="app">
-
-  <!-- START -->
-  <section id="start" class="screen on">
-    <div class="badge">
-      <span class="star">★ ★ ★</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150" width="150" role="img" aria-label="영핏 EngFit 로고">
-        <g>
-          <polygon points="60,18 100,40 60,62 20,40" fill="#1f2a52"/>
-          <polygon points="20,40 60,62 60,108 20,86" fill="#27336b"/>
-          <polygon points="60,62 100,40 100,86 60,108" fill="#1f2a52"/>
-          <polygon points="78,51 88,57 88,97 78,91" fill="#f0a830"/>
-          <polygon points="74,29 84,35 78,38 68,32" fill="#f0a830"/>
-        </g>
-        <text x="120" y="78" font-family="'Noto Sans KR',sans-serif" font-size="58" font-weight="800" fill="#1f2a52" letter-spacing="2">영핏</text>
-        <text x="122" y="104" font-family="'Noto Sans KR',sans-serif" font-size="15" font-weight="600" letter-spacing="3" fill="#6b7280">영어를 <tspan fill="#1f2a52" font-weight="800">핏</tspan><tspan fill="#6b7280">하다</tspan></text>
-      </svg>
-      <span class="star">★ ★ ★</span>
-    </div>
-    <h1>단어 테스트</h1>
-    <div class="unit eng">4. Dreaming of My Future</div>
-    <div class="meta">천재(정사열) 중3 영어 · 전체 60문항 랜덤</div>
-    <div class="meta">영어↔한글 혼합 + 주관식(영어 쓰기) 출제</div>
-    <div class="kbdhint">💻 키보드 <b>1~4</b>로 보기 선택 · 주관식은 <b>Enter</b>로 제출</div>
-    <div class="startwrap">
-      <button class="btn btn-primary" onclick="startQuiz()">시작하기</button>
-    </div>
-  </section>
-
-  <!-- QUIZ -->
-  <section id="quiz" class="screen">
-    <div class="qtop">
-      <div class="logo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" width="92" role="img" aria-label="영핏 로고">
-          <g>
-            <polygon points="60,8 100,30 60,52 20,30" fill="#1f2a52"/>
-            <polygon points="20,30 60,52 60,98 20,76" fill="#27336b"/>
-            <polygon points="60,52 100,30 100,76 60,98" fill="#1f2a52"/>
-            <polygon points="78,41 88,47 88,87 78,81" fill="#f0a830"/>
-            <polygon points="74,19 84,25 78,28 68,22" fill="#f0a830"/>
-          </g>
-          <text x="118" y="74" font-family="'Noto Sans KR',sans-serif" font-size="56" font-weight="800" fill="#1f2a52" letter-spacing="2">영핏</text>
-        </svg>
-      </div>
-      <div class="count"><span id="cur">1</span> / <span id="total">60</span></div>
-    </div>
-    <div class="bar"><i id="prog"></i></div>
-    <div class="prompt">
-      <span class="qtag" id="qtag">뜻 고르기</span>
-      <div id="promptword"></div>
-    </div>
-    <div class="choices" id="choices"></div>
-    <div class="typebox" id="typebox" style="display:none">
-      <input type="text" id="typeinput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="영어로 입력하세요">
-      <div class="typeanswer" id="typeanswer"></div>
-      <button class="btn btn-primary" id="typebtn" onclick="submitTyping()">제출 (Enter ⏎)</button>
-      <div class="typehint">대소문자는 구분하지 않아요</div>
-    </div>
-  </section>
-
-  <!-- RESULT -->
-  <section id="result" class="screen">
-    <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150" width="120" role="img" aria-label="영핏 EngFit 로고">
-        <g>
-          <polygon points="60,18 100,40 60,62 20,40" fill="#1f2a52"/>
-          <polygon points="20,40 60,62 60,108 20,86" fill="#27336b"/>
-          <polygon points="60,62 100,40 100,86 60,108" fill="#1f2a52"/>
-          <polygon points="78,51 88,57 88,97 78,91" fill="#f0a830"/>
-          <polygon points="74,29 84,35 78,38 68,32" fill="#f0a830"/>
-        </g>
-        <text x="120" y="78" font-family="'Noto Sans KR',sans-serif" font-size="58" font-weight="800" fill="#1f2a52" letter-spacing="2">영핏</text>
-        <text x="122" y="104" font-family="'Noto Sans KR',sans-serif" font-size="15" font-weight="600" letter-spacing="3" fill="#6b7280">영어를 <tspan fill="#1f2a52" font-weight="800">핏</tspan><tspan fill="#6b7280">하다</tspan></text>
-      </svg>
-    </div>
-    <div class="scorecard">
-      <div class="emoji" id="remoji">🎉</div>
-      <div class="score"><span id="rscore">0</span><small> / <span id="rtotal">60</span></small></div>
-      <div class="pct" id="rpct">0%</div>
-    </div>
-    <div class="reviewhead"><span id="rvtitle">오답 확인</span><span class="ok" id="rvok"></span></div>
-    <div class="review" id="review"></div>
-    <div class="actions">
-      <button class="btn btn-kakao" onclick="copyResult()">📋 결과 복사하기 (카카오톡 전송용)</button>
-      <button class="btn btn-ghost" onclick="restart()">다시 풀기 🔄</button>
-    </div>
-  </section>
-
-  <div class="toast" id="toast">복사되었습니다!</div>
-</div>
-
+<header class="site-header">
+  <div class="hicon">EF</div>
+  <div class="htxt"><h1>EngFit · Dialogue Order</h1><p><b>중2 · 동아(윤정미) · 4단원</b> · Are You Money Smart?</p></div>
+  <div class="hscore" id="hscore">0 / 7</div>
+</header>
+<main id="app"></main>
 <script>
-/* ===== 단어 데이터: 4. Dreaming of My Future (60) ===== */
-const WORDS = [
-  {en:"look down", ko:"우울해 보이다"},
-  {en:"disappointed", ko:"실망한"},
-  {en:"competition", ko:"대회, 시합"},
-  {en:"record", ko:"기록"},
-  {en:"cook", ko:"요리사"},
-  {en:"laugh at", ko:"…을 비웃다"},
-  {en:"give up", ko:"포기하다"},
-  {en:"lose", ko:"지다, 패배하다"},
-  {en:"match", ko:"시합, 경기"},
-  {en:"presentation", ko:"발표"},
-  {en:"speech", ko:"연설, 말"},
-  {en:"a little", ko:"약간, 조금"},
-  {en:"tip", ko:"조언"},
-  {en:"dish", ko:"요리"},
-  {en:"against", ko:"…에 반대하여"},
-  {en:"grade", ko:"성적"},
-  {en:"Why don't you ...?", ko:"…하는 게 어때?"},
-  {en:"hidden", ko:"숨겨진, 비밀의"},
-  {en:"figure", ko:"(중요한) 인물, 숫자"},
-  {en:"career", ko:"직업, 직장 생활"},
-  {en:"space", ko:"우주"},
-  {en:"expert", ko:"전문가"},
-  {en:"get over", ko:"…을 극복하다"},
-  {en:"manager", ko:"관리자, 경영자"},
-  {en:"recognize", ko:"알아보다, 인정하다"},
-  {en:"ability", ko:"능력"},
-  {en:"colored", ko:"유색 인종의"},
-  {en:"courage", ko:"용기"},
-  {en:"break down", ko:"…을 부수다"},
-  {en:"rocket", ko:"로켓"},
-  {en:"allow", ko:"허락하다"},
-  {en:"judge", ko:"판사"},
-  {en:"permission", ko:"허락"},
-  {en:"have no choice but to", ko:"…할 수밖에 없다"},
-  {en:"impress", ko:"감명을 주다"},
-  {en:"stand up for", ko:"…을 옹호하다"},
-  {en:"engineer", ko:"기술자"},
-  {en:"install", ko:"설치하다"},
-  {en:"later", ko:"나중에, 후에"},
-  {en:"offer", ko:"제의, 제안"},
-  {en:"thanks to", ko:"… 덕분에"},
-  {en:"programmer", ko:"프로그래머"},
-  {en:"be afraid of", ko:"…을 두려워하다"},
-  {en:"face", ko:"(상황에) 직면하다"},
-  {en:"laughter", ko:"웃음(소리)"},
-  {en:"job festival", ko:"진로 박람회"},
-  {en:"magician", ko:"마술사"},
-  {en:"keep -ing", ko:"계속 …하다"},
-  {en:"help", ko:"도움이 되다"},
-  {en:"keep ... in mind", ko:"…을 명심하다"},
-  {en:"reporter", ko:"기자"},
-  {en:"baker", ko:"제빵사"},
-  {en:"control", ko:"조종하다"},
-  {en:"magic trick", ko:"마술 묘기"},
-  {en:"line", ko:"(연극, 영화의) 대사"},
-  {en:"decorate", ko:"장식하다"},
-  {en:"let", ko:"~하게 하다"},
-  {en:"enter", ko:"들어가다, 참가하다"},
-  {en:"audition", ko:"오디션"},
-  {en:"prepare", ko:"준비하다"}
+// 유형 2가지: ① 전체 대화 순서 흐름 고르기  ② 빈칸에 들어갈 단어 고르기
+const QUIZ=[
+{type:"order",title:"Dialogue 1",ko:"친구에게 줄 기념품을 사는 상황",
+ first:"Can I help you?",
+ items:["Yes, I'm looking for a souvenir for my friend.","How about this key ring? It's only 5,000 won.","Perfect. I'll take it."],
+ ex:"도와드릴까요? → 네, 친구에게 줄 기념품을 찾고 있어요(I'm looking for) → 이 열쇠고리는 어떠세요? 5천 원밖에 안 해요 → 딱 좋네요, 살게요(I'll take it)!의 흐름이에요."},
+{type:"order",title:"Dialogue 2",ko:"여동생에게 줄 선물을 고르는 상황",
+ first:"Hi, I'm looking for a gift for my younger sister. She's twelve.",
+ items:["How about this small bag?","Well, can you show me something else?","How about these hairpins, then?","Oh, they're so pretty! I'll take two of them."],
+ ex:"여동생 선물을 찾고 있어요 → 이 작은 가방은 어떠세요? → 음, 다른 것을 보여 주시겠어요?(something else) → 그럼 이 머리핀들은 어떠세요? → 예쁘네요, 두 개 살게요(I'll take two of them)!의 흐름이에요. 거절 후 다른 제품을 제안받는 순서에 주의!"},
+{type:"word",title:"Dialogue 3",ko:"한국 전통 과자를 사는 상황",
+ lines:["I'm looking for traditional Korean cookies.","Oh, we have many different kinds. Here, try one of these.","It's sweet and delicious. How much ____ they?","We're having a sale, so this box is 8,000 won.","OK, I'll take it."],
+ bi:2,correct:"are",d:["is","am","be"],
+ ex:"가격을 물을 때 주어가 복수(they)면 How much are they?, 단수(it)면 How much is it? — 주어와 be동사의 수 일치가 포인트예요."},
+{type:"word",title:"Dialogue 4",ko:"휴대폰 케이스를 고르는 상황",
+ lines:["Hi, I'm looking for a phone case.","We have a few different colors here. How do you like this case?","I don't really like blue. Can you show me something else?","Then, how about this yellow case?","Oh, that will ____. I'll take it."],
+ bi:4,correct:"do",d:["does","doing","did"],
+ ex:"조동사 will 뒤에는 동사원형! 여기서 do는 '적절하다, 충분하다'라는 뜻으로, That will do. = 그거면 되겠어요."},
+{type:"word",title:"Dialogue 5",ko:"아빠에게 드릴 전통 기념품(갓)을 사며 할인받는 상황",
+ lines:["Hi, can I help you?","Yes, I'm looking for a traditional Korean souvenir. It's for my dad.","How about this fan? It is really popular.","Hmm... can you show me something else?","How about this hat, then? This is a gat, a traditional Korean hat for men.","Oh, it's unique. I love it. How much is it?","It's 30,000 won.","That's a little expensive.","We can give you a discount if you ____ two. It'll be 25,000 won each.","That's perfect! I'll get two hats, then."],
+ bi:8,correct:"buy",d:["will buy","bought","buying"],
+ ex:"조건을 나타내는 if절에서는 미래의 일이라도 현재시제를 써요. if you buy two = 두 개를 사면 (will buy ✗). each는 '개당'이라는 뜻!"},
+{type:"order",title:"Dialogue 6",ko:"여동생 선물로 물병을 사는 상황",
+ first:"Hi, I'm looking for a gift for my sister.",
+ items:["How about these hairpins?","Well, they are not her style. Can you show me something else?","How about this water bottle, then?","That looks good! I'll take it."],
+ ex:"여동생 선물을 찾고 있어요 → 이 머리핀들은 어떠세요? → 그녀의 스타일이 아니에요(not her style), 다른 것 보여 주시겠어요? → 그럼 이 물병은 어떠세요? → 좋아 보이네요(That looks good), 살게요!의 흐름이에요."},
+{type:"order",title:"Dialogue 7",ko:"할머니께 드릴 기념품을 사는 상황",
+ first:"Can I help you?",
+ items:["Yes. I'm looking for a souvenir for my grandmother.","How about these cookies? This box is 10,000 won.","Good! I'll take two."],
+ ex:"도와드릴까요? → 네, 할머니께 드릴 기념품을 찾고 있어요 → 이 쿠키들은 어떠세요? 한 상자 만 원이에요 → 좋아요, 두 상자 살게요(I'll take two)!의 흐름이에요."}
 ];
-
-let queue=[], idx=0, score=0, wrongs=[], locked=false;
-
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
-
-function buildQuestion(word){
-  // 주관식: 한글 뜻 → 영어 입력 (… / ? 포함 표현은 객관식만)
-  const canType = !/[.?…]/.test(word.en);
-  if(canType && Math.random()<0.35){
-    return {word, type:'typing'};
+const TOTAL=QUIZ.length;
+const LBL="ABCDE";
+let S;
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function permsOf(n){const idx=[...Array(n).keys()];const out=[];(function go(cur,rest){if(!rest.length){out.push(cur);return;}rest.forEach((r,i)=>go([...cur,r],rest.filter((_,j)=>j!==i)));})( [],idx);return out;}
+function buildQ(q){
+  if(q.type==="order"){
+    const n=q.items.length;
+    const disp=shuffle([...Array(n).keys()]);
+    const correctSeq=[...Array(n).keys()].map(ci=>LBL[disp.indexOf(ci)]).join(" → ");
+    let pool=permsOf(n).map(p=>p.map(ci=>LBL[disp.indexOf(ci)]).join(" → ")).filter(s=>s!==correctSeq);
+    const opts=shuffle([correctSeq,...shuffle(pool).slice(0,3)]);
+    return {disp,opts,answer:correctSeq};
+  }else{
+    const opts=shuffle([q.correct,...q.d]);
+    return {opts,answer:q.correct};
   }
-  // 객관식 방향 랜덤: en2ko = 영어 제시→한글 보기 / ko2en = 한글 제시→영어 보기
-  const dir = Math.random()<0.5 ? 'en2ko' : 'ko2en';
-  const key = dir==='en2ko' ? 'ko' : 'en';
-  const distractPool = shuffle(WORDS.filter(w=>w.en!==word.en));
-  const opts=[word];
-  for(const w of distractPool){
-    if(opts.length>=4) break;
-    if(opts.some(o=>o[key]===w[key])) continue; // 중복 보기 방지
-    opts.push(w);
-  }
-  return {word, type:'mc', dir, key, options:shuffle(opts)};
 }
-
-function startQuiz(){
-  queue = shuffle(WORDS).map(buildQuestion);
-  idx=0; score=0; wrongs=[];
-  document.getElementById('total').textContent=queue.length;
-  show('quiz');
+function init(){S={phase:"start",qi:0,score:0,fb:null,built:QUIZ.map(buildQ)};render();}
+function startQuiz(){S.phase="play";S.qi=0;S.fb=null;render();}
+function pick(oi){
+  if(S.fb)return;
+  const b=S.built[S.qi];
+  const ok=b.opts[oi]===b.answer;
+  if(ok)S.score++;
+  S.fb={ok,pickIdx:oi};
+  render();
+  if(ok)setTimeout(nextQ,250);
+}
+function nextQ(){
+  if(S.phase!=="play"||!S.fb)return;
+  S.fb=null;
+  if(S.qi<TOTAL-1){S.qi++;}else{S.phase="end";}
   render();
 }
-
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function blankify(s){return esc(s).replace("____",'<span class="blank">&nbsp;?&nbsp;</span>');}
 function render(){
-  locked=false;
-  const q=queue[idx];
-  document.getElementById('cur').textContent=idx+1;
-  document.getElementById('prog').style.width=((idx)/queue.length*100)+'%';
-
-  const pw=document.getElementById('promptword');
-  const tag=document.getElementById('qtag');
-  const box=document.getElementById('choices');
-  const tbox=document.getElementById('typebox');
-
-  if(q.type==='typing'){
-    tag.textContent='영어로 쓰기 ⏎';
-    pw.className='qword-ko';
-    pw.textContent=q.word.ko;
-    box.style.display='none';
-    tbox.style.display='flex';
-    const inp=document.getElementById('typeinput');
-    inp.value=''; inp.className=''; inp.disabled=false;
-    document.getElementById('typeanswer').style.display='none';
-    inp.focus();
+  document.getElementById("hscore").textContent=S.score+" / "+TOTAL;
+  const el=document.getElementById("app");
+  if(S.phase==="start"){
+    el.innerHTML=`<div class="start"><div class="unit-tag">중2 · 동아(윤정미) · 4단원</div><div class="bigt">Are You<br><span class="acc">Money Smart?</span></div>
+    <div class="subt">대화 순서 퀴즈 · 총 ${TOTAL}문제 (대화당 1문제)<br>전체 대화 순서 고르기 + 빈칸 단어 고르기<br><span style="font-size:12px;color:#8a8a82">⌨️ 컴퓨터: 숫자키 1~4로 답 선택 · Enter로 시작/다음</span></div>
+    <button class="btn btnp" onclick="startQuiz()">시작하기 →</button></div>`;
     return;
   }
-
-  tbox.style.display='none';
-  box.style.display='flex';
-  if(q.dir==='en2ko'){
-    tag.textContent='뜻 고르기';
-    pw.className='qword-en eng';
-    pw.textContent=q.word.en;
-  }else{
-    tag.textContent='단어 고르기';
-    pw.className='qword-ko';
-    pw.textContent=q.word.ko;
+  if(S.phase==="end"){
+    const pct=Math.round(S.score/TOTAL*100);
+    const msg=pct>=90?"완벽해요! 대화 흐름을 완전히 익혔어요.":pct>=70?"잘했어요! 틀린 대화만 한 번 더 복습해요.":"다시 한 번 도전! 반복하면 분명 늘어요.";
+    el.innerHTML=`<div class="result"><div class="bigt">Result</div>
+    <div class="scorebig">${S.score}<small> / ${TOTAL}</small></div>
+    <div class="subt">${pct}% · ${msg}</div>
+    <button class="btn btnp" onclick="init();startQuiz()">다시 풀기 ↻</button></div>`;
+    return;
   }
-
-  box.innerHTML='';
-  q.options.forEach((opt,i)=>{
-    const b=document.createElement('button');
-    const isEn = q.key==='en';
-    b.className='choice '+(isEn?'en eng':'ko');
-    b.dataset.val=opt[q.key];
-    const num=document.createElement('span');
-    num.className='num'; num.textContent=i+1;
-    b.appendChild(num);
-    b.appendChild(document.createTextNode(opt[q.key]));
-    b.onclick=()=>choose(b,opt,q);
-    box.appendChild(b);
+  const q=QUIZ[S.qi],b=S.built[S.qi],f=S.fb;
+  const pct=Math.round(S.qi/TOTAL*100);
+  let body="",prompt="";
+  if(q.type==="order"){
+    prompt=`주어진 문장에 이어질 <span class="mono">대화의 순서</span>로 알맞은 것은?`;
+    body=`<div class="line given"><span class="chip">시작</span><span class="lt">${esc(q.first)}</span></div>`;
+    b.disp.forEach((ci,k)=>{body+=`<div class="line"><span class="chip">${LBL[k]}</span><span class="lt">${esc(q.items[ci])}</span></div>`;});
+  }else{
+    prompt=`빈칸에 <span class="mono">들어갈 단어</span>로 알맞은 것은?`;
+    q.lines.forEach((t,i)=>{
+      if(i===q.bi)body+=`<div class="line target"><span class="lt">${blankify(t)}</span></div>`;
+      else body+=`<div class="line"><span class="lt">${esc(t)}</span></div>`;
+    });
+  }
+  let opts="";
+  b.opts.forEach((o,oi)=>{
+    let cls="opt",dis=f?" disabled":"";
+    if(f){if(o===b.answer)cls+=" ok";else if(oi===f.pickIdx)cls+=" ng";}
+    opts+=`<button class="${cls}"${dis} onclick="pick(${oi})"><span class="onum">${oi+1}</span><span class="seq">${esc(o)}</span></button>`;
   });
-}
-
-function choose(btn,opt,q){
-  if(locked) return;
-  locked=true;
-  const correct = opt.en===q.word.en;
-  const buttons=[...document.getElementById('choices').children];
-  buttons.forEach(b=>b.classList.add('lock'));
-
-  if(correct){
-    btn.classList.add('correct');
-    score++;
-    setTimeout(next,250); // 정답 → 0.25초 후 넘어가기
-  }else{
-    btn.classList.add('wrong');
-    buttons.forEach(b=>{ if(b.dataset.val===q.word[q.key]) b.classList.add('correct'); });
-    wrongs.push({
-      dir:q.dir,
-      en:q.word.en, ko:q.word.ko,
-      chosen: opt[q.key], correct:q.word[q.key], key:q.key
-    });
-    setTimeout(next,900); // 오답 → 잠시 보여주고 넘어가기
-  }
-}
-
-/* ===== 주관식 채점 (대소문자 구분 없음) ===== */
-function norm(s){
-  return s.toLowerCase()
-    .replace(/[’‘`]/g,"'")
-    .replace(/\s+/g,' ')
-    .trim();
-}
-function submitTyping(){
-  if(locked) return;
-  const q=queue[idx];
-  if(!q || q.type!=='typing') return;
-  const inp=document.getElementById('typeinput');
-  const val=inp.value;
-  if(norm(val)==='') { inp.focus(); return; } // 빈 입력은 제출 안 됨
-  locked=true;
-  inp.disabled=true;
-  const correct = norm(val)===norm(q.word.en);
-  if(correct){
-    inp.classList.add('correct');
-    score++;
-    setTimeout(next,250); // 정답 → 0.25초 후 넘어가기
-  }else{
-    inp.classList.add('wrong');
-    const ans=document.getElementById('typeanswer');
-    ans.innerHTML='정답: <b class="eng">'+q.word.en+'</b>';
-    ans.style.display='block';
-    wrongs.push({
-      dir:'typing',
-      en:q.word.en, ko:q.word.ko,
-      chosen: val.trim(), correct:q.word.en, key:'en'
-    });
-    setTimeout(next,1500); // 오답 → 정답 보여주고 넘어가기
-  }
-}
-
-/* ===== 키보드 조작: 1~4 보기 선택 / Enter 주관식 제출 ===== */
-document.addEventListener('keydown',function(e){
-  if(!document.getElementById('quiz').classList.contains('on')) return;
-  const q=queue[idx];
-  if(!q || locked) return;
-  if(q.type==='mc'){
-    const n={'1':0,'2':1,'3':2,'4':3}[e.key];
-    if(n!==undefined){
-      const b=document.getElementById('choices').children[n];
-      if(b){ e.preventDefault(); b.click(); }
+  let fb="";
+  if(f){
+    if(f.ok){
+      fb=`<div class="fb fbok">✓ 정답!</div>`;
+    }else{
+      fb=`<div class="fb fbng">✗ 오답<span class="ans">정답: ${esc(b.answer)}</span></div>
+      <div class="fb fbex">💡 <b>해설</b> · ${esc(q.ex)}</div>
+      <div class="btnrow"><button class="btn btnp" onclick="nextQ()">${S.qi<TOTAL-1?"다음 →":"결과 보기 →"} (Enter)</button></div>`;
     }
-  }else if(q.type==='typing' && e.key==='Enter'){
-    e.preventDefault();
-    submitTyping();
   }
+  el.innerHTML=`<div class="pw"><div class="pr"><span class="pl">Dialogue Order Quiz</span><span class="pn">${S.qi+1} / ${TOTAL}</span></div><div class="pb"><div class="pbi" style="width:${pct}%"></div></div></div>
+  <div class="card"><div class="qs">${q.title}</div><div class="qko">${q.ko}</div>
+  <span class="badge">${q.type==="order"?"🔀 전체 대화 순서 고르기":"✏️ 빈칸 단어 고르기"}</span>
+  <div class="qprompt">${prompt}</div>${body}
+  <div class="slbl">보기 <span style="font-weight:500;text-transform:none">(키보드 1~4)</span></div>${opts}${fb}</div>`;
+}
+document.addEventListener("keydown",e=>{
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")){
+    return;
+  }
+  if(S.phase==="start"&&e.key==="Enter"){startQuiz();return;}
+  if(S.phase==="end"&&e.key==="Enter"){init();startQuiz();return;}
+  if(S.phase!=="play")return;
+  if(!S.fb&&["1","2","3","4"].includes(e.key)){
+    const oi=+e.key-1;
+    if(oi<S.built[S.qi].opts.length)pick(oi);
+    return;
+  }
+  if(S.fb&&!S.fb.ok&&e.key==="Enter"){nextQ();}
 });
-
-function next(){
-  idx++;
-  if(idx>=queue.length){ finish(); }
-  else render();
-}
-
-function finish(){
-  document.getElementById('prog').style.width='100%';
-  const total=queue.length;
-  const pct=Math.round(score/total*100);
-  document.getElementById('rscore').textContent=score;
-  document.getElementById('rtotal').textContent=total;
-  document.getElementById('rpct').textContent=pct+'%';
-  document.getElementById('remoji').textContent = pct===100?'🏆': pct>=80?'🎉': pct>=60?'👍':'💪';
-
-  const review=document.getElementById('review');
-  const ok=document.getElementById('rvok');
-  const title=document.getElementById('rvtitle');
-  review.innerHTML='';
-  if(wrongs.length===0){
-    title.textContent='오답 확인';
-    ok.textContent='';
-    review.innerHTML='<div class="allright">완벽해요! 틀린 단어가 없어요 ✨</div>';
-  }else{
-    title.textContent='오답 확인 ('+wrongs.length+')';
-    ok.textContent='맞은 단어 '+score+'개';
-    wrongs.forEach(w=>{
-      const enB='<b class="eng">'+w.en+'</b>';
-      const div=document.createElement('div');
-      div.className='ritem';
-      div.innerHTML =
-        '<div class="q">'+enB+' &nbsp;—&nbsp; '+w.ko+'</div>'+
-        '<div class="ans"><span class="yours">내 답: <s>'+w.chosen+'</s></span>'+
-        '<span class="right">정답: '+w.correct+'</span></div>';
-      review.appendChild(div);
-    });
-  }
-  show('result');
-}
-
-function copyResult(){
-  const total=queue.length, pct=Math.round(score/total*100);
-  let t='[EngFit 단어 테스트]\n4. Dreaming of My Future (천재 정사열·중3)\n\n';
-  t+='점수: '+score+'/'+total+' ('+pct+'%)\n';
-  t+='날짜: '+new Date().toLocaleDateString('ko-KR')+'\n';
-  if(wrongs.length===0){
-    t+='\n🏆 모두 정답! 완벽합니다.';
-  }else{
-    t+='\n■ 틀린 단어 ('+wrongs.length+')\n';
-    wrongs.forEach((w,i)=>{ t+=(i+1)+'. '+w.en+' - '+w.ko+'\n'; });
-  }
-  const done=()=>showToast('복사되었습니다!');
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done));
-  }else{ fallbackCopy(t,done); }
-}
-function fallbackCopy(text,cb){
-  const ta=document.createElement('textarea');
-  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try{document.execCommand('copy');}catch(e){}
-  document.body.removeChild(ta); cb&&cb();
-}
-let toastT;
-function showToast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),1600);
-}
-function restart(){ show('start'); }
+init();
 </script>
-<!-- v2: keyboard 1-4 + typing(Enter, case-insensitive) -->
 </body>
 </html>
