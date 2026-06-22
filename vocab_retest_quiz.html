@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>영어 단어 시험</title>
+<style>
+  :root{
+    --bg:#0f172a; --surface:#1e293b; --surface-2:#172033; --border:#2a3a52;
+    --text:#f1f5f9; --muted:#94a3b8; --faint:#64748b;
+    --accent:#3b82f6; --accent-soft:rgba(59,130,246,.12); --accent-border:rgba(59,130,246,.55);
+    --radius:14px;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ background:var(--bg); color:var(--text);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+  button,input,textarea{ font-family:inherit; }
+  .wrap{ max-width:440px; margin:0 auto; }
+  .screen{ min-height:100vh; }
+
+  /* buttons */
+  .btn{ border:none; border-radius:12px; font-weight:700; cursor:pointer; transition:background .15s,opacity .15s; }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:active{ opacity:.9; }
+  .btn-ghost{ background:transparent; border:1px solid var(--border); color:#e2e8f0; font-weight:600; }
+  .btn-ghost:disabled{ color:#3a4a63; cursor:default; }
+
+  /* cards */
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; }
+  .input{ width:100%; padding:14px 16px; font-size:16px; border-radius:12px;
+    border:1px solid var(--border); background:var(--surface); color:var(--text); outline:none; }
+  .input:focus{ border-color:var(--accent-border); }
+
+  .eyebrow{ font-size:12px; letter-spacing:4px; color:var(--faint); text-transform:uppercase; }
+  .muted{ color:var(--muted); }
+  .faint{ color:var(--faint); }
+
+  /* options */
+  .opt{ display:flex; align-items:center; gap:12px; width:100%; padding:15px 16px;
+    border-radius:12px; border:1.5px solid var(--border); background:var(--surface);
+    cursor:pointer; transition:border-color .12s,background .12s; text-align:left; }
+  .opt .num{ font-size:18px; flex-shrink:0; width:24px; text-align:center; color:var(--muted); }
+  .opt .txt{ font-size:16px; line-height:1.4; color:#cbd5e1; }
+  .opt.sel{ border-color:var(--accent); background:var(--accent-soft); }
+  .opt.sel .num{ color:var(--accent); }
+  .opt.sel .txt{ color:var(--text); font-weight:600; }
+
+  .pill{ font-size:11px; color:var(--muted); padding:3px 10px; border-radius:999px;
+    background:rgba(148,163,184,.12); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ===== 단어 데이터 (손글씨 목록 23단어) ===== */
+const WORDS_RAW = [
+  ["efficiently","효율적으로"],
+  ["period","기간, 시기"],
+  ["gather","모으다, 모이다"],
+  ["including","~을 포함하여"],
+  ["distance","거리"],
+  ["complain","불평하다"],
+  ["stomach","위, 배(복부)"],
+  ["equipment","장비, 장치"],
+  ["ignore","무시하다"],
+  ["improving","향상시키는, 개선하는"],
+  ["strengthening","강화하는"],
+  ["dividing","나누는, 분할하는"],
+  ["desperate","절망적인, 필사적인"],
+  ["heartwarming","마음을 따뜻하게 하는, 훈훈한"],
+  ["lighthearted","마음이 가벼운, 쾌활한"],
+  ["confusing","혼란스러운, 헷갈리는"],
+  ["strategies","전략들"],
+  ["psychological","심리적인"],
+  ["functional","기능적인"],
+  ["professional","전문적인, 전문가의"],
+  ["amateur","아마추어의, 비전문가의"],
+  ["require","필요로 하다, 요구하다"],
+  ["benefit","이익, 혜택"],
+];
+
+const TEACHER = "진아쌤";
+const TITLE = "영어 단어 시험";
+const CIRCLE = ["\u2460","\u2461","\u2462","\u2463"];
+
+let state = {
+  screen:"home", name:"", questions:[], currentQ:0, answers:{},
+  results:null, startTime:null, timerId:null, showConfirm:false, showCopyText:false,
+};
+
+/* ===== 유틸 ===== */
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function generateMixedQuestions(words){
+  return shuffle(words).map(([eng,kor])=>{
+    const engToKor = Math.random()<0.5;
+    const question = engToKor?eng:kor;
+    const answer   = engToKor?kor:eng;
+    const pool = words.filter(w=>(engToKor?w[1]:w[0])!==answer).map(w=>engToKor?w[1]:w[0]);
+    const distractors = shuffle(pool).slice(0,3);
+    return { question, answer, options:shuffle([answer,...distractors]), eng, kor, type:engToKor?"A":"B" };
+  });
+}
+function formatClock(ms){ const s=Math.floor(ms/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function buildResultText(){
+  const r=state.results; if(!r) return "";
+  const date=new Date().toLocaleDateString("ko-KR");
+  let t=`[${TITLE}]\n`;
+  t+=`${state.name?state.name+" | ":""}${date}\n`;
+  t+=`${r.correct}/${r.total} (${Math.round(r.correct/r.total*100)}%) | ${r.time}\n`;
+  if(r.wrongs.length>0){ t+=`\n[오답 ${r.wrongs.length}개]\n`; r.wrongs.forEach((w,i)=>{ t+=`${i+1}. ${w.eng} = ${w.kor}\n`; }); }
+  else { t+=`\n만점! 전부 정답!\n`; }
+  t+=`\n— ${TEACHER}`;
+  return t;
+}
+
+/* ===== 액션 ===== */
+function startQuiz(){
+  if(state.timerId) clearInterval(state.timerId);
+  state.questions=generateMixedQuestions(WORDS_RAW);
+  state.currentQ=0; state.answers={}; state.results=null;
+  state.startTime=Date.now(); state.showConfirm=false; state.showCopyText=false;
+  state.screen="quiz";
+  state.timerId=setInterval(()=>{ if(state.screen==="quiz") updateTimer(); },1000);
+  render();
+}
+function selectAnswer(idx){
+  state.answers[state.currentQ]=idx;
+  const last = state.currentQ>=state.questions.length-1;
+  render();
+  if(!last){
+    setTimeout(()=>{
+      if(state.currentQ<state.questions.length-1){
+        state.currentQ++; render(); window.scrollTo({top:0,behavior:"smooth"});
+      }
+    },250);
+  }
+}
+function goPrev(){ if(state.currentQ>0){ state.currentQ--; render(); window.scrollTo({top:0,behavior:"smooth"}); } }
+function finishQuiz(){
+  const timeSec=Math.floor((Date.now()-state.startTime)/1000);
+  let correct=0; const wrongs=[];
+  state.questions.forEach((q,i)=>{
+    const sel=state.answers[i];
+    if(sel!==undefined && q.options[sel]===q.answer) correct++; else wrongs.push(q);
+  });
+  if(state.timerId) clearInterval(state.timerId);
+  state.results={ correct, total:state.questions.length, wrongs, time:`${Math.floor(timeSec/60)}분 ${timeSec%60}초` };
+  state.showConfirm=false; state.screen="result"; render();
+}
+function updateTimer(){
+  const el=document.getElementById("timer");
+  if(el && state.startTime){
+    const answered=Object.keys(state.answers).length;
+    el.textContent=`${formatClock(Date.now()-state.startTime)} · ${answered}개 응답`;
+  }
+}
+
+/* ===== 렌더 ===== */
+const app=()=>document.getElementById("app");
+function render(){
+  if(state.screen==="home") renderHome();
+  else if(state.screen==="quiz") renderQuiz();
+  else if(state.screen==="result") renderResult();
+}
+
+function renderHome(){
+  app().innerHTML=`
+  <div class="screen" style="padding:20px;">
+    <div class="wrap" style="padding-top:56px;">
+      <div style="text-align:center;margin-bottom:44px;">
+        <div class="eyebrow" style="margin-bottom:10px;">VOCAB QUIZ</div>
+        <h1 style="font-size:32px;font-weight:800;line-height:1.3;">${TITLE}</h1>
+        <div class="muted" style="font-size:15px;margin-top:10px;">${WORDS_RAW.length}단어 · 영한/한영 혼합 · 4지선다</div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <label class="muted" style="font-size:13px;display:block;margin-bottom:8px;">이름</label>
+        <input id="nameInput" class="input" type="text" value="${esc(state.name)}" placeholder="이름을 입력하세요" autocomplete="off" />
+      </div>
+      <button id="startBtn" class="btn btn-primary" style="width:100%;padding:18px;font-size:18px;">시험 시작</button>
+      <div class="card" style="margin-top:24px;padding:18px 20px;">
+        <div class="muted" style="font-size:13px;line-height:2;">
+          답을 선택하면 자동으로 다음 문제로 넘어가요<br/>
+          제출 전까지 '이전'으로 답 수정 가능<br/>
+          결과 텍스트를 복사해서 카톡 전송
+        </div>
+      </div>
+      <div class="faint" style="text-align:center;margin-top:28px;font-size:12px;">by ${TEACHER}</div>
+    </div>
+  </div>`;
+  const ni=document.getElementById("nameInput");
+  ni.addEventListener("input",e=>{ state.name=e.target.value; });
+  document.getElementById("startBtn").addEventListener("click",startQuiz);
+}
+
+function renderQuiz(){
+  const q=state.questions[state.currentQ];
+  const selected=state.answers[state.currentQ];
+  const total=state.questions.length;
+  const answered=Object.keys(state.answers).length;
+  const unanswered=total-answered;
+  const progress=total>0?(answered/total)*100:0;
+  const typeLabel=q.type==="A"?"영 → 한":"한 → 영";
+
+  const optionsHtml=q.options.map((opt,idx)=>`
+    <button data-idx="${idx}" class="opt${selected===idx?' sel':''}">
+      <span class="num">${CIRCLE[idx]}</span>
+      <span class="txt">${esc(opt)}</span>
+    </button>`).join("");
+
+  const confirmHtml=state.showConfirm?`
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;">
+      <div class="card" style="padding:28px 24px;max-width:360px;width:100%;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">시험을 제출할까요?</div>
+        ${unanswered>0?`<div style="font-size:14px;color:#fca5a5;margin-bottom:12px;">아직 ${unanswered}문제를 풀지 않았습니다.</div>`:``}
+        <div class="muted" style="font-size:14px;margin-bottom:20px;">제출하면 답을 수정할 수 없습니다.</div>
+        <div style="display:flex;gap:8px;">
+          <button id="cancelSubmit" class="btn btn-ghost" style="flex:1;padding:12px;">돌아가기</button>
+          <button id="doSubmit" class="btn btn-primary" style="flex:1;padding:12px;">제출하기</button>
+        </div>
+      </div>
+    </div>`:``;
+
+  app().innerHTML=`
+  <div class="screen">
+    <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span class="muted" style="font-size:13px;">${state.currentQ+1} / ${total}</span>
+        <span id="timer" class="faint" style="font-size:13px;font-variant-numeric:tabular-nums;">${formatClock(Date.now()-state.startTime)} · ${answered}개 응답</span>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+        <div style="height:100%;width:${progress}%;background:var(--accent);border-radius:2px;transition:width .3s;"></div>
+      </div>
+    </div>
+
+    <div class="wrap" style="padding:20px 16px 100px;">
+      <div class="card" style="padding:24px 20px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:12px;color:var(--accent);font-weight:700;letter-spacing:1px;">Q${state.currentQ+1}</span>
+          <span class="pill">${typeLabel}</span>
+        </div>
+        <div style="font-size:24px;font-weight:700;line-height:1.4;">${esc(q.question)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">${optionsHtml}</div>
+    </div>
+
+    ${confirmHtml}
+
+    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;">
+      <button id="prevBtn" class="btn btn-ghost" ${state.currentQ===0?'disabled':''} style="flex:1;max-width:150px;padding:13px;">이전</button>
+      <button id="submitBtn" class="btn btn-primary" style="flex:1;padding:13px 18px;font-size:15px;">제출 (${answered}/${total})</button>
+    </div>
+  </div>`;
+
+  document.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>selectAnswer(parseInt(b.dataset.idx,10))));
+  document.getElementById("prevBtn").addEventListener("click",goPrev);
+  document.getElementById("submitBtn").addEventListener("click",()=>{ state.showConfirm=true; render(); });
+  if(state.showConfirm){
+    document.getElementById("cancelSubmit").addEventListener("click",()=>{ state.showConfirm=false; render(); });
+    document.getElementById("doSubmit").addEventListener("click",finishQuiz);
+  }
+}
+
+function renderResult(){
+  const r=state.results;
+  const pct=Math.round(r.correct/r.total*100);
+  let grade;
+  if(pct>=95) grade="A+"; else if(pct>=90) grade="A"; else if(pct>=85) grade="B+";
+  else if(pct>=80) grade="B"; else if(pct>=70) grade="C"; else grade="D";
+  const resultText=buildResultText();
+
+  const copyArea=!state.showCopyText
+    ? `<button id="showCopyBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:16px;margin-bottom:16px;">카톡 전송용 텍스트 보기</button>`
+    : `<div style="margin-bottom:16px;">
+        <div class="muted" style="font-size:13px;margin-bottom:8px;">아래 텍스트를 복사해서 카톡에 붙여넣으세요</div>
+        <textarea id="copyText" readonly class="input"
+          style="min-height:210px;font-size:13px;font-family:monospace;line-height:1.6;resize:none;">${esc(resultText)}</textarea>
+        <button id="copyBtn" class="btn btn-ghost" style="width:100%;margin-top:8px;padding:12px;">복사하기</button>
+      </div>`;
+
+  const wrongHtml=r.wrongs.length>0?`
+    <div class="card" style="padding:20px;">
+      <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:12px;">오답 목록 (${r.wrongs.length}개)</div>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        ${r.wrongs.map((w,i)=>`
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-radius:8px;background:${i%2===0?'var(--surface-2)':'transparent'};">
+            <span style="font-size:14px;font-weight:600;">${esc(w.eng)}</span>
+            <span class="muted" style="font-size:14px;text-align:right;">${esc(w.kor)}</span>
+          </div>`).join("")}
+      </div>
+    </div>`:`
+    <div class="card" style="padding:24px;text-align:center;">
+      <div style="font-size:16px;font-weight:700;color:var(--accent);">만점! 전부 정답! 🎉</div>
+    </div>`;
+
+  app().innerHTML=`
+  <div class="screen" style="padding:20px 16px;">
+    <div class="wrap" style="padding-top:20px;">
+      <div class="card" style="padding:32px 24px;text-align:center;margin-bottom:20px;">
+        <div class="muted" style="font-size:13px;letter-spacing:2px;margin-bottom:4px;">${TITLE}</div>
+        ${state.name?`<div style="font-size:18px;font-weight:600;color:#e2e8f0;margin-bottom:16px;">${esc(state.name)}</div>`:`<div style="height:8px;"></div>`}
+        <div style="font-size:60px;font-weight:800;color:var(--accent);line-height:1;">${grade}</div>
+        <div style="font-size:40px;font-weight:700;margin-top:8px;">${r.correct}<span class="faint" style="font-size:20px;">/${r.total}</span></div>
+        <div class="muted" style="font-size:15px;margin-top:4px;">${pct}% · ${r.time}</div>
+        <div style="margin:20px auto 0;width:180px;height:10px;background:var(--border);border-radius:6px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:6px;"></div>
+        </div>
+      </div>
+
+      ${copyArea}
+      ${wrongHtml}
+
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button id="homeBtn" class="btn btn-ghost" style="flex:1;padding:14px;">처음으로</button>
+        <button id="retryBtn" class="btn btn-primary" style="flex:1;padding:14px;">다시 풀기</button>
+      </div>
+      <div class="faint" style="text-align:center;font-size:12px;padding:20px 0 24px;">by ${TEACHER}</div>
+    </div>
+  </div>`;
+
+  if(!state.showCopyText){
+    document.getElementById("showCopyBtn").addEventListener("click",()=>{ state.showCopyText=true; render(); });
+  } else {
+    const ta=document.getElementById("copyText"); ta.focus(); ta.select();
+    document.getElementById("copyBtn").addEventListener("click",()=>{
+      ta.select(); let ok=false;
+      try{ ok=document.execCommand("copy"); }catch(e){}
+      if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).catch(()=>{}); ok=true; }
+      const b=document.getElementById("copyBtn"); if(b) b.textContent= ok?"복사됨 ✓":"길게 눌러 복사하세요";
+    });
+  }
+  document.getElementById("homeBtn").addEventListener("click",()=>{ state.screen="home"; state.results=null; state.showCopyText=false; render(); });
+  document.getElementById("retryBtn").addEventListener("click",startQuiz);
+}
+
+render();
+</script>
+</body>
+</html>
