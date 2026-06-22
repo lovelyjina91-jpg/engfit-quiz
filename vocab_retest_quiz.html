@@ -84,10 +84,12 @@ const WORDS_RAW = [
 
 const TEACHER = "진아쌤";
 const TITLE = "영어 단어 시험";
+const LESSON = "문성중 3·4단원 시험대비";
+const STUDENT = "한승주";
 const CIRCLE = ["\u2460","\u2461","\u2462","\u2463"];
 
 let state = {
-  screen:"home", name:"", questions:[], currentQ:0, answers:{},
+  screen:"home", name:STUDENT, questions:[], currentQ:0, answers:{},
   results:null, startTime:null, timerId:null, showConfirm:false, showCopyText:false,
 };
 
@@ -113,7 +115,7 @@ function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").rep
 function buildResultText(){
   const r=state.results; if(!r) return "";
   const date=new Date().toLocaleDateString("ko-KR");
-  let t=`[${TITLE}]\n`;
+  let t=`[${LESSON}]\n`;
   t+=`${state.name?state.name+" | ":""}${date}\n`;
   t+=`${r.correct}/${r.total} (${Math.round(r.correct/r.total*100)}%) | ${r.time}\n`;
   if(r.wrongs.length>0){ t+=`\n[오답 ${r.wrongs.length}개]\n`; r.wrongs.forEach((w,i)=>{ t+=`${i+1}. ${w.eng} = ${w.kor}\n`; }); }
@@ -176,10 +178,11 @@ function renderHome(){
   app().innerHTML=`
   <div class="screen" style="padding:20px;">
     <div class="wrap" style="padding-top:56px;">
-      <div style="text-align:center;margin-bottom:44px;">
-        <div class="eyebrow" style="margin-bottom:10px;">VOCAB QUIZ</div>
-        <h1 style="font-size:32px;font-weight:800;line-height:1.3;">${TITLE}</h1>
-        <div class="muted" style="font-size:15px;margin-top:10px;">${WORDS_RAW.length}단어 · 영한/한영 혼합 · 4지선다</div>
+      <div style="text-align:center;margin-bottom:40px;">
+        <div style="font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.5px;margin-bottom:12px;">${LESSON}</div>
+        <h1 style="font-size:30px;font-weight:800;line-height:1.3;">${TITLE}</h1>
+        <div style="display:inline-block;margin-top:14px;padding:6px 16px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent-border);color:#bfdbfe;font-size:14px;font-weight:700;">${STUDENT}</div>
+        <div class="muted" style="font-size:15px;margin-top:14px;">${WORDS_RAW.length}단어 · 영한/한영 혼합 · 4지선다</div>
       </div>
       <div style="margin-bottom:24px;">
         <label class="muted" style="font-size:13px;display:block;margin-bottom:8px;">이름</label>
@@ -189,6 +192,7 @@ function renderHome(){
       <div class="card" style="margin-top:24px;padding:18px 20px;">
         <div class="muted" style="font-size:13px;line-height:2;">
           답을 선택하면 자동으로 다음 문제로 넘어가요<br/>
+          PC에서는 키보드 1~4 / ← 키로도 풀 수 있어요<br/>
           제출 전까지 '이전'으로 답 수정 가능<br/>
           결과 텍스트를 복사해서 카톡 전송
         </div>
@@ -305,7 +309,8 @@ function renderResult(){
   <div class="screen" style="padding:20px 16px;">
     <div class="wrap" style="padding-top:20px;">
       <div class="card" style="padding:32px 24px;text-align:center;margin-bottom:20px;">
-        <div class="muted" style="font-size:13px;letter-spacing:2px;margin-bottom:4px;">${TITLE}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.5px;margin-bottom:6px;">${LESSON}</div>
+        <div class="muted" style="font-size:12px;letter-spacing:1px;margin-bottom:4px;">${TITLE}</div>
         ${state.name?`<div style="font-size:18px;font-weight:600;color:#e2e8f0;margin-bottom:16px;">${esc(state.name)}</div>`:`<div style="height:8px;"></div>`}
         <div style="font-size:60px;font-weight:800;color:var(--accent);line-height:1;">${grade}</div>
         <div style="font-size:40px;font-weight:700;margin-top:8px;">${r.correct}<span class="faint" style="font-size:20px;">/${r.total}</span></div>
@@ -342,6 +347,20 @@ function renderResult(){
 }
 
 render();
+
+/* ===== 키보드 입력 (PC): 숫자 1~4 = 보기 선택, ← = 이전 ===== */
+document.addEventListener("keydown", (e)=>{
+  if(state.screen!=="quiz" || state.showConfirm) return;
+  const tag=(e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="textarea") return;      // 입력칸에 타이핑 중이면 무시
+  if(e.key>="1" && e.key<="4"){                     // 숫자키(상단/넘버패드 모두) 1~4
+    const idx=parseInt(e.key,10)-1;
+    const q=state.questions[state.currentQ];
+    if(q && idx<q.options.length){ e.preventDefault(); selectAnswer(idx); }
+  } else if(e.key==="ArrowLeft"){                    // ← 이전 문제
+    e.preventDefault(); goPrev();
+  }
+});
 </script>
 </body>
 </html>
