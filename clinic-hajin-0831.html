@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>영핏 · 하진 개념클리닉 (현재분사와 과거분사)</title>
+<style>
+  :root{
+    --teal:#2F7C83; --teal-d:#235E64; --teal-l:#E6F1F1;
+    --line:#DBE4E5; --ink:#2B3A3D; --sub:#6B7B7E;
+    --cream:#FFF6E8; --wrong:#C0392B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Malgun Gothic','Apple SD Gothic Neo',system-ui,sans-serif;
+       background:#F2F6F6;color:var(--ink);min-height:100vh;
+       display:flex;justify-content:center;padding:18px 12px 60px;line-height:1.5;}
+  .wrap{width:100%;max-width:540px;}
+  .card{background:#fff;border-radius:16px;padding:24px 20px;
+        box-shadow:0 2px 10px rgba(35,94,100,.08);margin-bottom:14px;}
+  .brand{font-size:.78rem;letter-spacing:.12em;color:var(--teal);font-weight:700;margin-bottom:8px;}
+  h1{font-size:1.3rem;color:var(--teal-d);margin-bottom:8px;line-height:1.35;}
+  h2{font-size:1.12rem;color:var(--teal-d);margin-bottom:10px;}
+  .sub{font-size:.9rem;color:var(--sub);margin-bottom:16px;}
+  .notice{background:var(--cream);border-radius:10px;padding:12px 14px;
+          font-size:.88rem;color:#7A5A2E;margin:14px 0;line-height:1.55;}
+  input[type=text]{width:100%;padding:13px;font-size:1.05rem;
+        border:1.5px solid var(--line);border-radius:10px;color:var(--ink);}
+  input[type=text]:focus{outline:none;border-color:var(--teal);}
+  .btn{display:block;width:100%;margin-top:14px;padding:15px;font-size:1.05rem;
+       font-weight:700;color:#fff;background:var(--teal);border:none;
+       border-radius:10px;cursor:pointer;}
+  .btn:disabled{background:#B8C4C2;cursor:default;}
+  .btn.big{padding:19px;font-size:1.15rem;}
+  .btn.ghost{background:#fff;color:var(--teal);border:1.5px solid var(--teal);}
+
+  .bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .bar > i{display:block;height:100%;background:var(--teal);width:0;transition:width .25s;}
+  .meta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--sub);margin-bottom:14px;}
+  .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 9px;
+         border-radius:99px;background:var(--teal-l);color:var(--teal-d);margin-right:6px;}
+  .badge.hard{background:#FDECEA;color:#A93226;}
+  .tag{font-size:.75rem;color:var(--sub);}
+
+  .qtext{font-size:1.06rem;line-height:1.65;margin:12px 0 8px;font-weight:700;}
+  .qko{font-size:.88rem;color:var(--sub);font-weight:400;margin-bottom:14px;}
+  .choice{display:block;width:100%;text-align:left;padding:13px 14px;margin-bottom:9px;
+          font-size:.99rem;line-height:1.5;background:#F7FAFA;border:1.5px solid var(--line);
+          border-radius:10px;cursor:pointer;color:var(--ink);font-family:inherit;}
+  .choice:active{background:var(--teal-l);}
+  .choice.ok{background:var(--teal-l);border-color:var(--teal);}
+  .choice.no{background:#FDECEA;border-color:var(--wrong);}
+  .choice[disabled]{cursor:default;}
+  .num{color:var(--teal);font-weight:700;margin-right:7px;}
+
+  .fb{border-radius:10px;padding:14px;margin-top:12px;font-size:.93rem;line-height:1.6;
+      border-left:4px solid var(--teal);background:#F7FAFA;}
+  .fb.no{border-left-color:var(--wrong);background:#FDF3F2;}
+  .fb .head{font-weight:700;color:var(--teal-d);margin-bottom:6px;}
+  .fb.no .head{color:var(--wrong);}
+  .rule{background:var(--cream);border-radius:8px;padding:9px 11px;margin-top:9px;
+        font-size:.88rem;color:#7A5A2E;font-weight:700;}
+
+  .corner-no{font-size:.78rem;letter-spacing:.14em;color:var(--teal);font-weight:700;margin-bottom:6px;}
+  .why{background:#FDF3F2;border-left:4px solid var(--wrong);border-radius:8px;
+       padding:13px 14px;font-size:.92rem;line-height:1.6;margin:14px 0;}
+  .why b{color:var(--wrong);}
+  .rulecard{background:var(--teal-l);border-radius:10px;padding:14px;font-size:.95rem;
+            line-height:1.65;margin-bottom:4px;}
+  .rulecard b{color:var(--teal-d);}
+
+  .score-big{font-size:2.3rem;font-weight:700;color:var(--teal);text-align:center;margin:14px 0 4px;}
+  .score-sub{text-align:center;font-size:.88rem;color:var(--sub);margin-bottom:18px;}
+  table.sum{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:18px;}
+  table.sum th,table.sum td{border-bottom:1px solid var(--line);padding:9px 6px;text-align:left;}
+  table.sum th{color:var(--sub);font-weight:600;font-size:.82rem;}
+  table.sum td.r{text-align:right;font-weight:700;color:var(--teal-d);}
+  .copy-help{font-size:.85rem;color:var(--sub);text-align:center;margin-top:10px;line-height:1.55;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ══ 시작 화면 ══ -->
+  <div class="card" id="start-card">
+    <div class="brand">영핏영어 · ENGFIT</div>
+    <h1>하진이 개념클리닉<br>현재분사와 과거분사</h1>
+    <p class="sub">중3 동아 윤정미 · Unit 139<br>코너 4개 · 16문항 · 약 15분</p>
+    <div class="notice">
+      ※ 중간에 나가면 답이 사라져요. <b>한 번에 다 풀어주세요!</b><br>
+      ※ 다 풀면 마지막에 「결과 복사」 버튼을 눌러 카톡으로 보내주세요.
+    </div>
+    <input type="text" id="name-input" placeholder="이름을 써주세요" maxlength="20" autocomplete="off">
+    <button class="btn" id="start-btn" disabled>시작하기</button>
+  </div>
+
+  <!-- ══ 코너 인트로 화면 ══ -->
+  <div class="card hidden" id="intro-card">
+    <div class="corner-no" id="intro-no"></div>
+    <h2 id="intro-title"></h2>
+    <div class="why" id="intro-why"></div>
+    <div class="rulecard" id="intro-rule"></div>
+    <button class="btn" id="intro-btn">문제 풀러 가기</button>
+  </div>
+
+  <!-- ══ 문제 화면 ══ -->
+  <div class="card hidden" id="quiz-card">
+    <div class="bar"><i id="bar-fill"></i></div>
+    <div class="meta">
+      <span id="meta-left"></span>
+      <span id="meta-right"></span>
+    </div>
+    <div>
+      <span class="badge" id="q-badge"></span><span class="tag" id="q-tag"></span>
+    </div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qko" id="qko"></div>
+    <div id="choices"></div>
+    <div id="feedback"></div>
+    <button class="btn hidden" id="next-btn">다음 문제 →</button>
+  </div>
+
+  <!-- ══ 결과 화면 ══ -->
+  <div class="card hidden" id="result-card">
+    <div class="brand">영핏영어 · ENGFIT</div>
+    <h1 id="result-head">다 풀었어요!</h1>
+    <div class="score-big" id="score-line"></div>
+    <div class="score-sub" id="time-line"></div>
+    <table class="sum"><thead><tr><th>코너</th><th style="text-align:right">점수</th></tr></thead>
+      <tbody id="sum-body"></tbody></table>
+    <button class="btn big" id="copy-btn">결과 복사하기</button>
+    <p class="copy-help" id="copy-help">위 버튼을 누르면 결과가 복사돼요.<br>카톡으로 지나티처에게 붙여넣어 보내주세요!</p>
+    <button class="btn ghost" id="review-btn">틀린 문제 다시 보기</button>
+    <div id="review-box" class="hidden" style="margin-top:18px"></div>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ════════ 코너 데이터 ════════ */
+var CORNERS = [
+  { no:"코너 A",
+    title:"be동사를 잊었다",
+    why:"지난 시험지에서 <b>영작1-5번 (She reading book)</b>, <b>영작2-6번 (The book titled ~)</b> 두 문제를 같은 이유로 틀렸어요. 분사(-ing / -ed)를 동사라고 생각한 거예요.",
+    rule:"분사는 <b>형용사</b>예요. 꾸며주기만 할 뿐 동사 자리를 못 채워요.<br>그래서 문장의 동사로 쓰려면 앞에 <b>be동사(am/is/are/was/were)</b>가 꼭 필요합니다.<br>· She <b>is</b> reading. (○) / She reading. (×)" },
+  { no:"코너 B",
+    title:"-ing냐 -ed냐 — 하는 쪽 vs 당하는 쪽",
+    why:"<b>영작1-4번 (smelling → smelled)</b>, <b>영작2-1번 (spilling → spilled)</b>에서 방향이 뒤집혔어요. 두 번이나 같은 자리에서 미끄러졌으니 여기가 진짜 약한 곳이에요.",
+    rule:"명사가 <b>스스로 하는 중</b>이면 -ing, <b>당한 것</b>이면 -ed(과거분사).<br>· a cry<b>ing</b> baby — 아기가 스스로 운다<br>· a brok<b>en</b> window — 창문은 누가 깬 것<br>헷갈리면 이렇게 물어보세요 — <b>“얘가 한 거야, 당한 거야?”</b>" },
+  { no:"코너 C",
+    title:"감정은 -ing가 주고, -ed가 받는다",
+    why:"<b>시험대비 43번</b>과 <b>영작2-5번 (interesting experiences)</b>에서 흔들렸어요. 이건 규칙만 알면 바로 잡히는 부분이에요.",
+    rule:"감정을 <b>만들어 주는 것</b>(사물·일)은 -ing, 감정을 <b>느끼는 사람</b>은 -ed.<br>· The movie was <b>boring</b>. (영화가 지루하게 만듦)<br>· I was <b>bored</b>. (내가 지루함을 느낌)<br>한 줄 구분법 — <b>“주는 쪽이냐, 받는 쪽이냐”</b>" },
+  { no:"코너 D",
+    title:"분사가 길어지면 명사 뒤로 간다",
+    why:"<b>영작2-8번 (The wearing uniform the boy)</b>에서 순서가 꼬였고, <b>영작2-7번</b>에서는 관사 a를 빠뜨렸어요.",
+    rule:"분사가 <b>혼자</b>면 명사 <b>앞</b>, <b>딸린 말이 있으면</b> 명사 <b>뒤</b>.<br>· a sleeping baby (혼자 → 앞)<br>· the baby sleeping <b>on the sofa</b> (딸린 말 있음 → 뒤)<br>· the boy wearing <b>a uniform</b> (딸린 말 있음 → 뒤)" }
+];
+
+/* ════════ 문항 데이터 ════════ */
+var QUESTIONS = [
+  /* ── 코너 A ── */
+  { c:0, level:"기초", tag:"지난 영작1 5번 유형",
+    q:"She ______ a book in the library.", ko:"그녀는 도서관에서 책을 읽고 있다.",
+    choices:["is reading","reading","is read","was read"], answer:"is reading",
+    exp:"읽고 ‘있다’는 진행 중 → be + -ing. reading 혼자서는 문장의 동사가 될 수 없어요. is read는 ‘책이 읽힌다’는 수동이라 주어 She와 맞지 않고요.",
+    rule:"분사 앞에 be가 있는지 먼저 확인!" },
+  { c:0, level:"기초", tag:"지난 영작2 6번 유형",
+    q:"The book ______ ‘Anne of Green Gables’.", ko:"그 책은 ‘빨강머리 앤’으로 제목이 붙여졌다.",
+    choices:["is titled","titled","titling","is titling"], answer:"is titled",
+    exp:"책이 제목을 ‘붙인’ 게 아니라 ‘붙여진’ 쪽이니 과거분사 titled. 그리고 titled 앞에 is가 있어야 비로소 문장이 완성돼요. is 없이 The book titled ~ 라고만 쓰면 ‘~라는 제목의 책’이라는 명사 덩어리로 끝나버려요.",
+    rule:"당한 쪽 + be = 수동태" },
+  { c:0, level:"심화", tag:"문장 완성 판별",
+    q:"다음 중 <u>문장이 완성된 것</u>은?", ko:"",
+    choices:["The man bitten by a dog went to the hospital.",
+             "The road covered with fallen leaves.",
+             "The window breaking by the strong wind.",
+             "The boy wearing a uniform in our school."],
+    answer:"The man bitten by a dog went to the hospital.",
+    note:"문장 완성 판별",
+    labels:["The man bitten ~ went (동사 있음)","The road covered ~","The window breaking ~","The boy wearing ~"],
+    exp:"정답 문장에는 went라는 <b>진짜 동사</b>가 있어요. 나머지 셋은 분사가 명사를 꾸미기만 하고 끝나서 ‘~한 무엇’이라는 덩어리일 뿐, 문장이 아닙니다. covered / breaking / wearing 앞뒤로 be동사나 다른 동사가 하나도 없죠.",
+    rule:"동사를 손가락으로 짚어보기 — 없으면 문장이 아니다" },
+  { c:0, level:"심화", tag:"고쳐쓰기",
+    q:"My little brother <u>sleeping</u> on the sofa right now.<br><span style='font-weight:400;font-size:.93rem'>밑줄 친 부분을 바르게 고친 것은?</span>", ko:"",
+    choices:["is sleeping","slept","sleep","is slept"], answer:"is sleeping",
+    exp:"right now(지금)가 있으니 지금 자고 있는 중 → is sleeping. slept는 과거라 now와 안 맞고, is slept는 ‘자여진다’는 이상한 뜻이 돼요 — sleep은 수동으로 쓰지 않습니다.",
+    rule:"now가 보이면 진행형(be + -ing)을 의심" },
+
+  /* ── 코너 B ── */
+  { c:1, level:"기초", tag:"지난 영작2 1번 유형",
+    q:"He cleaned the ______ water.", ko:"그는 그 쏟아진 물을 청소했다.",
+    choices:["spilled","spilling","spill","to spill"], answer:"spilled",
+    exp:"물이 스스로 뭔가를 쏟은 게 아니라 누군가가 ‘쏟은’ 물이죠. 당한 쪽이니 과거분사 spilled. spilling water라고 하면 ‘물이 무언가를 쏟고 있는’ 이상한 그림이 돼요.",
+    rule:"얘가 한 거야, 당한 거야? → 당했으면 -ed" },
+  { c:1, level:"기초", tag:"지난 영작1 4번 유형",
+    q:"The ______ bread smelled delicious.", ko:"그 구워진 빵은 맛있는 냄새가 났다.",
+    choices:["baked","baking","bake","bakes"], answer:"baked",
+    exp:"빵은 사람이 ‘구운’ 것이니 baked. baking bread는 ‘지금 구워지는 중인 빵’이라 다 만들어져 냄새가 나는 상황과 어긋나요.",
+    rule:"완성된 상태 = 과거분사" },
+  { c:1, level:"심화", tag:"지난 시험 24번 유형",
+    q:"다음 중 어법상 <u>어색한</u> 것은?", ko:"",
+    choices:["Products making of beans are good for your health.",
+             "People are afraid of the barking dog.",
+             "I saw the flying bird over the trees.",
+             "She picked up the fallen pen."],
+    answer:"Products making of beans are good for your health.",
+    note:"어색한 문장 찾기",
+    labels:["Products making of beans","the barking dog","the flying bird","the fallen pen"],
+    exp:"제품은 콩으로 ‘만들어지는’ 쪽이니 <b>made</b> of beans가 맞아요. making이면 제품이 스스로 무언가를 만들고 있다는 뜻이 됩니다. 나머지는 다 맞아요 — 개가 스스로 짖고(barking), 새가 스스로 날고(flying), 펜은 떨어진 것(fallen)이니까요.",
+    rule:"be made of / be covered with는 통째로 외우기" },
+  { c:1, level:"심화", tag:"헷갈리는 짝",
+    q:"The road is covered with ______ leaves, and I saw a leaf ______ from the tree.",
+    ko:"그 길은 떨어진 낙엽으로 덮여 있고, 나는 나뭇잎 하나가 나무에서 떨어지고 있는 걸 봤다.",
+    choices:["fallen – falling","falling – fallen","fallen – fallen","falling – falling"],
+    answer:"fallen – falling",
+    exp:"이미 떨어져서 바닥에 있는 잎은 <b>fallen</b>(다 끝난 상태). 지금 나무에서 떨어지는 중인 잎은 <b>falling</b>(진행 중). 같은 단어라도 ‘끝났냐, 진행 중이냐’로 갈라집니다.",
+    rule:"끝났으면 fallen, 하는 중이면 falling" },
+
+  /* ── 코너 C ── */
+  { c:2, level:"기초", tag:"지난 영작2 5번 유형",
+    q:"We had ______ experiences on this trip.", ko:"우리는 이번 여행에서 흥미로운 경험들을 했다.",
+    choices:["interesting","interested","interest","interests"], answer:"interesting",
+    exp:"경험이 나에게 흥미를 ‘주는’ 쪽이니 interesting. interested는 사람이 흥미를 ‘느낄’ 때 써요 — I am <b>interested</b> in music.",
+    rule:"주는 쪽 -ing / 받는 쪽 -ed" },
+  { c:2, level:"기초", tag:"지난 시험 43번 유형",
+    q:"She was very ______ at the news.", ko:"그녀는 그 소식에 매우 놀랐다.",
+    choices:["surprised","surprising","surprise","surprises"], answer:"surprised",
+    exp:"놀란 사람은 She, 즉 감정을 ‘받은’ 쪽이니 surprised. 소식 자체가 놀랍다고 말하려면 The news was <b>surprising</b>이 됩니다.",
+    rule:"사람이 주어면 대부분 -ed" },
+  { c:2, level:"심화", tag:"지난 시험 43번 유형",
+    q:"다음 중 어법상 <u>어색한</u> 것은?", ko:"",
+    choices:["I was very exciting about the concert.",
+             "We can’t forget the amazing view.",
+             "We accept that disappointing result.",
+             "He is frightened by the sound of a car."],
+    answer:"I was very exciting about the concert.",
+    note:"어색한 문장 찾기",
+    labels:["I was very exciting","the amazing view","that disappointing result","He is frightened"],
+    exp:"내가 신남을 ‘느낀’ 쪽이니 <b>excited</b>가 맞아요. exciting이라고 하면 ‘내가 남들을 신나게 만드는 사람’이라는 뜻이 됩니다. 나머지 셋은 맞아요 — 경치가 감탄을 주고(amazing), 결과가 실망을 주고(disappointing), 그는 겁을 받은(frightened) 쪽이니까요.",
+    rule:"사람 + 감정 = -ed" },
+  { c:2, level:"심화", tag:"지난 시험 7번 유형",
+    q:"He is ______ by the sound of something ______.", ko:"그는 무언가가 떨어지는 소리에 겁을 먹는다.",
+    choices:["frightened – falling","frightening – fallen","frightened – fallen","frightening – falling"],
+    answer:"frightened – falling",
+    exp:"He는 겁을 ‘먹은’ 쪽이니 frightened. 그리고 소리가 나는 건 무언가가 ‘떨어지고 있는 중’이라서 falling이에요. fallen은 이미 떨어져 조용히 놓여 있는 상태라 소리가 안 나요.",
+    rule:"사람은 -ed / 소리는 지금 나는 중이니 -ing" },
+
+  /* ── 코너 D ── */
+  { c:3, level:"기초", tag:"지난 영작2 8번 유형",
+    q:"______ is a student at our school.", ko:"그 교복을 입고 있는 그 소년은 우리 학교 학생이다.",
+    choices:["The boy wearing the uniform","The wearing uniform boy",
+             "The wearing the uniform boy","Wearing the boy uniform"],
+    answer:"The boy wearing the uniform",
+    exp:"wearing이 the uniform이라는 딸린 말을 데리고 왔으니 명사(The boy) <b>뒤</b>로 갑니다. 단어 하나면 앞(a sleeping baby), 두 단어 이상이면 뒤 — 이 한 가지만 기억하세요.",
+    rule:"짧으면 앞, 길면 뒤" },
+  { c:3, level:"기초", tag:"지난 영작1 7번 유형",
+    q:"The girl ______ the puppy passed by me.", ko:"그 강아지를 안고 있는 그 소녀가 내 옆을 지나갔다.",
+    choices:["holding","held","hold","to hold"], answer:"holding",
+    exp:"소녀가 강아지를 ‘안고 있는’ 능동이니 holding. held를 쓰면 소녀가 누군가에게 안겨 있다는 뜻이 돼요. 위치도 꾸밈 받는 명사(The girl) 바로 뒤가 맞습니다.",
+    rule:"안는 쪽이면 -ing, 안기는 쪽이면 -ed" },
+  { c:3, level:"심화", tag:"지난 시험 46번 유형",
+    q:"다음 중 어법상 <u>어색한</u> 것은?", ko:"",
+    choices:["The mountain covering with snow is beautiful.",
+             "Tulips planted in the garden are my mother’s pride.",
+             "The article posted on that blog is about dogs.",
+             "Look at the bird singing in the tree."],
+    answer:"The mountain covering with snow is beautiful.",
+    note:"어색한 문장 찾기",
+    labels:["The mountain covering with snow","Tulips planted","The article posted","the bird singing"],
+    exp:"산이 눈을 덮은 게 아니라 눈에 ‘덮인’ 것이니 <b>covered</b> with snow. be covered with(~로 덮여 있다)는 통째로 외워두면 편해요. 나머지는 다 맞습니다 — 튤립은 심어졌고(planted), 글은 올려졌고(posted), 새는 스스로 노래하니까요(singing).",
+    rule:"덮은 쪽이 아니라 덮인 쪽 → covered" },
+  { c:3, level:"심화", tag:"지난 영작2 7번 유형",
+    q:"우리말에 맞게 <u>바르게 쓴</u> 것은?", ko:"빨간 모자를 쓰고 달리고 있는 그 소년을 봐.",
+    choices:["Look at the boy wearing a red hat and running.",
+             "Look at the boy wearing red hat and running.",
+             "Look at the wearing a red hat running boy.",
+             "Look at the running wearing a red hat boy."],
+    answer:"Look at the boy wearing a red hat and running.",
+    labels:["the boy wearing a red hat (a 있음)","the boy wearing red hat (a 없음)",
+            "the wearing a red hat running boy","the running wearing a red hat boy"],
+    exp:"꾸미는 말이 길어졌으니 the boy <b>뒤</b>로 보내는 게 맞아요. 그리고 hat은 셀 수 있는 명사라 <b>a</b> red hat처럼 a를 꼭 붙여야 합니다 — 지난번에 이 a를 빠뜨렸어요.",
+    rule:"길면 뒤로 + 셀 수 있는 명사엔 a" }
+];
+
+/* ════════ 진행 로직 ════════ */
+var studentName="", current=0, correctCount=0, startTime=0, shownCorner=-1;
+var wrongNumbers=[], answersLog=[];
+var CIRCLED=["①","②","③","④"];
+
+var $=function(id){return document.getElementById(id);};
+var nameInput=$("name-input"), startBtn=$("start-btn");
+
+nameInput.addEventListener("input",function(){
+  startBtn.disabled = nameInput.value.trim().length===0;
+});
+nameInput.addEventListener("keydown",function(e){
+  if(e.key==="Enter" && !startBtn.disabled) startBtn.click();
+});
+
+startBtn.addEventListener("click",function(){
+  studentName=nameInput.value.trim();
+  if(!studentName) return;
+  startTime=Date.now();
+  $("start-card").classList.add("hidden");
+  step();
+});
+
+$("intro-btn").addEventListener("click",function(){
+  $("intro-card").classList.add("hidden");
+  $("quiz-card").classList.remove("hidden");
+  showQuestion();
+  window.scrollTo(0,0);
+});
+
+function step(){
+  if(current>=QUESTIONS.length){ showResult(); return; }
+  var c=QUESTIONS[current].c;
+  if(c!==shownCorner){
+    shownCorner=c;
+    var co=CORNERS[c];
+    $("intro-no").textContent=co.no;
+    $("intro-title").textContent=co.title;
+    $("intro-why").innerHTML="<b>왜 틀렸을까?</b><br>"+co.why;
+    $("intro-rule").innerHTML="<b>규칙 한 줄</b><br>"+co.rule;
+    $("quiz-card").classList.add("hidden");
+    $("intro-card").classList.remove("hidden");
+    window.scrollTo(0,0);
+  }else{
+    $("quiz-card").classList.remove("hidden");
+    showQuestion();
+    window.scrollTo(0,0);
+  }
+}
+
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
+function showQuestion(){
+  var q=QUESTIONS[current];
+  $("bar-fill").style.width=Math.round(current/QUESTIONS.length*100)+"%";
+  $("meta-left").textContent=CORNERS[q.c].no+" · "+CORNERS[q.c].title;
+  $("meta-right").textContent=(current+1)+" / "+QUESTIONS.length;
+  $("q-badge").textContent="["+q.level+"]";
+  $("q-badge").className="badge"+(q.level==="심화"?" hard":"");
+  $("q-tag").textContent=q.tag;
+  $("qtext").innerHTML="Q"+(current+1)+". "+q.q;
+  $("qko").textContent=q.ko||"";
+  $("qko").style.display=q.ko?"block":"none";
+  $("feedback").innerHTML="";
+  $("next-btn").classList.add("hidden");
+
+  var box=$("choices");
+  box.innerHTML="";
+  shuffle(q.choices).forEach(function(c,i){
+    var b=document.createElement("button");
+    b.className="choice";
+    b.type="button";
+    b.innerHTML='<span class="num">'+CIRCLED[i]+"</span>"+c;
+    b.setAttribute("data-val",c);
+    b.addEventListener("click",function(){ pick(c); });
+    box.appendChild(b);
+  });
+}
+
+function pick(choice){
+  var q=QUESTIONS[current];
+  var ok = (choice===q.answer);
+  var btns=$("choices").querySelectorAll(".choice");
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    var v=btns[i].getAttribute("data-val");
+    if(v===q.answer) btns[i].className="choice ok";
+    else if(v===choice) btns[i].className="choice no";
+  }
+  if(ok) correctCount++; else wrongNumbers.push(current+1);
+  answersLog.push({no:current+1, ok:ok, chosen:choice, answer:q.answer});
+
+  var fb=document.createElement("div");
+  fb.className="fb"+(ok?"":" no");
+  fb.innerHTML="<div class='head'>"+(ok?"정답이에요!":"아쉬워요 · 정답은 "+q.answer)+"</div>"
+             + q.exp + "<div class='rule'>구분법 · "+q.rule+"</div>";
+  $("feedback").appendChild(fb);
+
+  var nb=$("next-btn");
+  nb.textContent = (current===QUESTIONS.length-1) ? "결과 보기 →" : "다음 문제 →";
+  nb.classList.remove("hidden");
+}
+
+$("next-btn").addEventListener("click",function(){
+  current++;
+  step();
+});
+
+function cornerScores(){
+  var s=[0,0,0,0], t=[0,0,0,0];
+  answersLog.forEach(function(l,i){
+    var c=QUESTIONS[i].c;
+    t[c]++;
+    if(l.ok) s[c]++;
+  });
+  return {s:s,t:t};
+}
+
+function showResult(){
+  $("quiz-card").classList.add("hidden");
+  $("intro-card").classList.add("hidden");
+  $("result-card").classList.remove("hidden");
+  window.scrollTo(0,0);
+
+  $("score-line").textContent=correctCount+" / "+QUESTIONS.length;
+  var mins=Math.max(1,Math.round((Date.now()-startTime)/60000));
+  $("time-line").textContent="걸린 시간 약 "+mins+"분";
+  $("result-head").textContent = (correctCount===QUESTIONS.length)
+      ? "전부 다 맞았어요!" : "다 풀었어요! 수고했어요";
+
+  var cs=cornerScores(), tb=$("sum-body");
+  CORNERS.forEach(function(co,i){
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+co.no+" · "+co.title+"</td><td class='r'>"+cs.s[i]+" / "+cs.t[i]+"</td>";
+    tb.appendChild(tr);
+  });
+
+  var rb=$("review-box");
+  if(wrongNumbers.length===0){
+    rb.innerHTML="<div class='fb'><div class='head'>틀린 문제가 하나도 없어요</div>개념이 확실히 잡혔어요. 이대로 시험장 가면 됩니다!</div>";
+  }else{
+    answersLog.forEach(function(l,i){
+      if(l.ok) return;
+      var q=QUESTIONS[i];
+      var d=document.createElement("div");
+      d.className="fb no";
+      d.innerHTML="<div class='head'>Q"+(i+1)+" · 내 답 "+l.chosen+" → 정답 "+q.answer+"</div>"
+                + q.exp + "<div class='rule'>구분법 · "+q.rule+"</div>";
+      rb.appendChild(d);
+    });
+  }
+}
+
+$("review-btn").addEventListener("click",function(){
+  var rb=$("review-box");
+  var open=!rb.classList.contains("hidden");
+  rb.classList.toggle("hidden");
+  this.textContent = open ? "틀린 문제 다시 보기" : "다시 보기 닫기";
+});
+
+/* ════════ 결과 복사 ════════ */
+function shortOf(q,val){
+  if(q.labels){
+    var i=q.choices.indexOf(val);
+    if(i>-1 && q.labels[i]) return q.labels[i];
+  }
+  return val.length>34 ? val.slice(0,34)+"…" : val;
+}
+
+function buildResultText(){
+  var d=new Date();
+  var date=(d.getMonth()+1)+"/"+d.getDate();
+  var mins=Math.max(1,Math.round((Date.now()-startTime)/60000));
+  var lines=[];
+  lines.push("[영핏] "+studentName+" · 개념클리닉(현재분사·과거분사) "+date);
+  lines.push("점수 "+correctCount+" / "+QUESTIONS.length+" · "+mins+"분");
+  lines.push("");
+  if(wrongNumbers.length===0){
+    lines.push("틀린 문항 없음");
+  }else{
+    lines.push("틀린 문항 "+wrongNumbers.map(function(n){return n+"번";}).join(", "));
+    answersLog.forEach(function(l,i){
+      if(l.ok) return;
+      var q=QUESTIONS[i];
+      var head=l.no+"번"+(q.note?" ("+q.note+")":"");
+      lines.push(head+" · 내 답 "+shortOf(q,l.chosen)+" / 정답 "+shortOf(q,q.answer));
+    });
+  }
+  lines.push("");
+  var cs=cornerScores();
+  lines.push("코너별 "+CORNERS.map(function(co,i){
+    return co.no.replace("코너 ","")+" "+cs.s[i]+"/"+cs.t[i];
+  }).join(" · "));
+  return lines.join("\n");
+}
+
+function copyDone(){
+  var b=$("copy-btn");
+  b.textContent="복사됐어요! 카톡에 붙여넣기 →";
+  b.style.background="#235E64";
+  $("copy-help").textContent="카톡 대화창을 열고 길게 눌러 「붙여넣기」 하면 돼요.";
+}
+
+$("copy-btn").addEventListener("click",function(){
+  var msg=buildResultText();
+  var done=false;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(msg).then(copyDone).catch(function(){ fallback(msg); });
+      done=true;
+    }
+  }catch(e){ done=false; }
+  if(!done) fallback(msg);
+});
+
+function fallback(msg){
+  var ta=document.createElement("textarea");
+  ta.value=msg;
+  ta.style.position="fixed"; ta.style.left="-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  var ok=false;
+  try{ ok=document.execCommand("copy"); }catch(e){ ok=false; }
+  document.body.removeChild(ta);
+  if(ok) copyDone();
+  else window.prompt("아래 내용을 길게 눌러 복사한 뒤 카톡으로 보내주세요", msg);
+}
+</script>
+</body>
+</html>
